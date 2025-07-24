@@ -1,19 +1,59 @@
 import { useState } from 'react';
 import style from './Header.module.scss';
-import { Search, Bell, Menu, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import {
+    Search,
+    Bell,
+    Menu,
+    X,
+    ClipboardList,
+    Star,
+    Bookmark,
+    User,
+    Crown,
+    LayoutDashboard,
+    Briefcase,
+    Sticker,
+} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/authStore';
 import ProfileDialog from '../dialog/ProfileDialog';
+import SearchBar from '../search/SearchBar';
+import SearchDialog from '../dialog/SearchDialog';
 
 function Header() {
     // 검색 관련
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchDialogOpen, setSearchDialogOpen] = useState(false);
     // const [searchResults, setSearchResults] = useState<
     //     { id: number; title: string; type: string }[]
     // >([]);
     // const [isSearching, setIsSearching] = useState(false);
     // const [showResults, setShowResults] = useState(false);
     // const [isFocusing, setIsFocusing] = useState(false);
+    const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
+
+    const userMenuItems = [
+        {
+            id: '지원 관리',
+            path: 'manage',
+            icon: ClipboardList,
+        },
+        {
+            id: '추천 공고',
+            path: 'recommend',
+            icon: Star,
+        },
+        {
+            id: '북마크',
+            path: 'bookmark',
+            icon: Bookmark,
+        },
+        {
+            id: '나의 CV',
+            path: 'mycv',
+            icon: User,
+        },
+    ] as const;
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -25,6 +65,10 @@ function Header() {
 
     const moveToSignInPage = () => {
         navigate('./signIn');
+    };
+
+    const moveToLandingPage = () => {
+        navigate('/');
     };
 
     const toggleMobileMenu = () => {
@@ -43,27 +87,30 @@ function Header() {
                 </button>
 
                 <div className={style.header__container__subContainer}>
-                    <p className={style.header__logo}>goodJob</p>
-                    {/* <div className={style.header__searchBar}>
-                        <Search className={style.header__searchBar__icon} size={20} />
-                        <input
-                            type="text"
-                            placeholder="검색"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className={style.header__searchBar__input}
-                        />
-                    </div> */}
+                    <p className={style.header__logo} onClick={moveToLandingPage}>
+                        goodJob
+                    </p>
                 </div>
 
                 <div className={style.header__actions}>
                     {isLoggedIn ? (
                         <>
+                            <Search
+                                className={style.header__search}
+                                aria-label="검색"
+                                size={38}
+                                onClick={() => setSearchDialogOpen(true)}
+                            />
+                            {searchDialogOpen && (
+                                <SearchDialog onClose={() => setSearchDialogOpen(false)} />
+                            )}
+
                             <Bell
                                 className={style.header__notification}
                                 aria-label="알림"
                                 size={38}
                             />
+
                             {/* <User className={style.header__profile} aria-label="프로필" size={38} /> */}
                             <ProfileDialog />
                             {/* 테스트 버튼 */}
@@ -87,50 +134,54 @@ function Header() {
             </div>
 
             {/* Mobile Menu */}
-            <div className={`${style.header__mobileMenu} ${mobileMenuOpen ? style.active : ''}`}>
-                <div className={style.header__mobileMenu__header}>
-                    <p className={style.header__mobileMenu__logo}>goodJob</p>
+            <div className={`${style.mobileMenu} ${mobileMenuOpen ? style.active : ''}`}>
+                <div className={style.mobileMenu__header}>
+                    <p className={style.mobileMenu__logo}>goodJob</p>
                     <button
-                        className={style.header__mobileMenu__close}
+                        className={style.mobileMenu__close}
                         onClick={toggleMobileMenu}
                         aria-label="메뉴 닫기">
-                        <X size={24} />
+                        <X size={33} />
                     </button>
                 </div>
 
-                <div className={style.header__mobileMenu__search}>
-                    <Search className={style.header__mobileMenu__searchIcon} size={20} />
+                {/* <div className={style.mobileMenu__search}>
+                    <Search className={style.mobileMenu__searchIcon} size={20} />
                     <input
                         type="text"
-                        placeholder="검색"
+                        placeholder="최신 채용 공고 검색하기"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className={style.header__mobileMenu__searchInput}
+                        className={style.mobileMenu__searchInput}
                     />
-                </div>
+                </div> */}
 
-                <nav className={style.header__mobileMenu__nav}>
-                    <a href="/">지원관리</a>
-                    <a href="/">추천 공고</a>
-                    <a href="/">북마크</a>
-                    <a href="/">나의 CV</a>
-                    {isLoggedIn && (
-                        <>
-                            <a href="/">내 프로필</a>
-                            <a href="/">설정</a>
-                        </>
-                    )}
+                {/* 모바일 메뉴 네비게이션 */}
+                <nav className={style.mobileMenu__menu}>
+                    {userMenuItems.map((item) => (
+                        <li
+                            key={item.id}
+                            className={style.mobileMenu__menuItem}
+                            onClick={toggleMobileMenu}>
+                            <Link to={item.path} className={style.mobileMenu__menuLink}>
+                                <item.icon
+                                    className={style.mobileMenu__menuIcon}
+                                    size={30}></item.icon>
+                                <span className={style.mobileMenu__menuText}>{item.id}</span>
+                            </Link>
+                        </li>
+                    ))}
                 </nav>
 
                 {!isLoggedIn && (
-                    <div className={style.header__mobileMenu__buttons}>
+                    <div className={style.mobileMenu__buttons}>
                         <button
-                            className={style.header__mobileMenu__buttonsSignUp}
+                            className={style.mobileMenu__buttonsSignUp}
                             onClick={moveToSignInPage}>
                             회원가입
                         </button>
                         <button
-                            className={style.header__mobileMenu__buttonsSignIn}
+                            className={style.mobileMenu__buttonsSignIn}
                             onClick={moveToSignInPage}>
                             로그인
                         </button>

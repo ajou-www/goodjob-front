@@ -31,6 +31,12 @@
         height: 100%;
         width: 100%;
         padding: 0 1.5rem;
+
+        @media (max-width: 480px) {
+            height: 3rem;
+            padding: 0 0rem;
+            justify-content: center;
+        }
     }
 
     &__menuButton {
@@ -78,6 +84,10 @@
             transform: translateY(-50%);
             color: #969696;
             z-index: 2;
+
+            @media (max-width: 480px) {
+                top: 42%;
+            }
         }
 
         &Input {
@@ -353,10 +363,6 @@
 
         &__menuButton {
             display: block;
-        }
-
-        &__search {
-            max-width: 200px;
         }
 
         &__authButtons {

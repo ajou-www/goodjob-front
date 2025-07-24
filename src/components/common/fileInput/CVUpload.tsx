@@ -25,6 +25,7 @@ function CVUpload() {
     const { getJobList, getSelectedCvId } = useJobStore();
     const navigate = useNavigate();
     const TOTAL_JOB = 80;
+    const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
 
     const handleContinue = () => {
         navigate('/main/recommend');
@@ -187,22 +188,27 @@ function CVUpload() {
                             <UploadCloud size={48} strokeWidth={1.5} />
                         </div>
                         <p className={style.dragAndDropCard__text}>
-                            CV를 여기에 드래그하여 업로드하세요
+                            {isMobile
+                                ? '업로드할 CV를 선택하세요'
+                                : 'CV를 여기에 드래그하여 업로드하세요'}
                         </p>
                         <div className={style.fileInfo}>
                             <p className={style.dragAndDropCard__subtext}>지원 파일: PDF</p>
                             <p className={style.dragAndDropCard__subtext}>용량 제한: 5 MB</p>
                         </div>
-
-                        <div className={style.dragAndDropCard__divider}>
-                            <span>또는</span>
-                        </div>
+                        {isMobile ? (
+                            <></>
+                        ) : (
+                            <div className={style.dragAndDropCard__divider}>
+                                <span>또는</span>
+                            </div>
+                        )}
 
                         <div className={style.fileButtonContainer}>
                             <button
                                 className={style.dragAndDropCard__button}
                                 onClick={handleButtonClick}>
-                                파일에서 선택
+                                파일 선택
                             </button>
                         </div>
                     </div>

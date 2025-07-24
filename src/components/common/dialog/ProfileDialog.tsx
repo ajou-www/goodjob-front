@@ -84,8 +84,6 @@ function ProfileDialog() {
                     </ul>
 
                     <span className={style.divider}></span>
-
-                    <span className={style.divider}></span>
                     <div className={style.logout} onClick={handleLogout}>
                         <LogOut size={18} className={style.logoutIcon} />
                         로그아웃
