@@ -8,7 +8,7 @@ import useUserStore from '../../store/userStore';
 function Index() {
     const { fetchUserData } = useUserStore();
     const navigate = useNavigate();
-    const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
+    // const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
 
     // useEffect(() => {
     //     const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;

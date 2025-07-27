@@ -1,35 +1,17 @@
 import { useState } from 'react';
 import style from './Header.module.scss';
-import {
-    Search,
-    Bell,
-    Menu,
-    X,
-    ClipboardList,
-    Star,
-    Bookmark,
-    User,
-    Crown,
-    LayoutDashboard,
-    Briefcase,
-    Sticker,
-} from 'lucide-react';
+import { Search, Bell, Menu, X, ClipboardList, Star, Bookmark, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/authStore';
 import ProfileDialog from '../dialog/ProfileDialog';
-import SearchBar from '../search/SearchBar';
 import SearchDialog from '../dialog/SearchDialog';
 
 function Header() {
     // 검색 관련
-    const [searchQuery, setSearchQuery] = useState('');
     const [searchDialogOpen, setSearchDialogOpen] = useState(false);
-    // const [searchResults, setSearchResults] = useState<
-    //     { id: number; title: string; type: string }[]
-    // >([]);
-    // const [isSearching, setIsSearching] = useState(false);
-    // const [showResults, setShowResults] = useState(false);
-    // const [isFocusing, setIsFocusing] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+    const navigate = useNavigate();
     const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
 
     const userMenuItems = [
@@ -54,14 +36,6 @@ function Header() {
             icon: User,
         },
     ] as const;
-
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-
-    // 로그인
-    // const accessToken = useAuthStore((state) => state.accessToken);
-
-    const navigate = useNavigate();
 
     const moveToSignInPage = () => {
         navigate('./signIn');
@@ -95,12 +69,17 @@ function Header() {
                 <div className={style.header__actions}>
                     {isLoggedIn ? (
                         <>
-                            <Search
-                                className={style.header__search}
-                                aria-label="검색"
-                                size={38}
-                                onClick={() => setSearchDialogOpen(true)}
-                            />
+                            {isMobile ? (
+                                <Search
+                                    className={style.header__search}
+                                    aria-label="검색"
+                                    size={38}
+                                    onClick={() => setSearchDialogOpen(true)}
+                                />
+                            ) : (
+                                <></>
+                            )}
+
                             {searchDialogOpen && (
                                 <SearchDialog onClose={() => setSearchDialogOpen(false)} />
                             )}
@@ -111,9 +90,7 @@ function Header() {
                                 size={38}
                             />
 
-                            {/* <User className={style.header__profile} aria-label="프로필" size={38} /> */}
                             <ProfileDialog />
-                            {/* 테스트 버튼 */}
                         </>
                     ) : (
                         <>
@@ -145,17 +122,6 @@ function Header() {
                     </button>
                 </div>
 
-                {/* <div className={style.mobileMenu__search}>
-                    <Search className={style.mobileMenu__searchIcon} size={20} />
-                    <input
-                        type="text"
-                        placeholder="최신 채용 공고 검색하기"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className={style.mobileMenu__searchInput}
-                    />
-                </div> */}
-
                 {/* 모바일 메뉴 네비게이션 */}
                 <nav className={style.mobileMenu__menu}>
                     {userMenuItems.map((item) => (
@@ -163,7 +129,7 @@ function Header() {
                             key={item.id}
                             className={style.mobileMenu__menuItem}
                             onClick={toggleMobileMenu}>
-                            <Link to={item.path} className={style.mobileMenu__menuLink}>
+                            <Link to={`/main/${item.path}`} className={style.mobileMenu__menuLink}>
                                 <item.icon
                                     className={style.mobileMenu__menuIcon}
                                     size={30}></item.icon>

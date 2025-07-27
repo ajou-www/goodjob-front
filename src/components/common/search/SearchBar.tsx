@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 import axios from 'axios';
 import { SERVER_IP } from '../../../constants/env';
+import UniversalDialog from '../dialog/UniversalDialog';
 
 interface SearchBarProps {
     onClose: () => void;
@@ -136,95 +137,117 @@ function SearchBar({ onClose }: SearchBarProps) {
     }, []);
 
     return (
-        <div className={styles.header__container}>
-            <div
-                className={`${styles.header__search} ${
-                    isFocusing ? styles['header__search--extend'] : ''
-                }`}
-                ref={searchContainerRef}>
-                <div className={styles.header__searchInputWrapper}>
-                    <Search className={styles.header__searchIcon} size={20} />
-                    <form onSubmit={handleSearchSubmit}>
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            placeholder="최신 채용 공고 검색하기"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            onFocus={handleSearchFocus}
-                            onBlur={handleSearchBlur}
-                            className={styles.header__searchInput}
-                        />
-                    </form>
-                </div>
+        <>
+            {showSingleSearchResult ? (
+                <UniversalDialog
+                    isOpen={showSingleSearchResult}
+                    onClose={() => setShowSingleSearchResult(false)}
+                    job={selectedResult}
+                />
+            ) : (
+                ''
+            )}
+            {isFocusing && (
+                <div
+                    className={styles.header__overlay}
+                    onClick={() => {
+                        setIsFocusing(false);
+                    }}
+                />
+            )}
+            <div className={styles.header__container}>
+                <div
+                    className={`${styles.header__search} ${
+                        isFocusing ? styles['header__search--extend'] : ''
+                    }`}
+                    ref={searchContainerRef}>
+                    <div className={styles.header__searchInputWrapper}>
+                        <Search className={styles.header__searchIcon} size={20} />
+                        <form onSubmit={handleSearchSubmit}>
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                placeholder="최신 채용 공고 검색하기"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                onFocus={handleSearchFocus}
+                                onBlur={handleSearchBlur}
+                                className={styles.header__searchInput}
+                            />
+                        </form>
+                    </div>
 
-                {/* 검색 결과 드롭다운 */}
-                {isFocusing && (
-                    <div className={styles.header__searchResults}>
-                        {/* 히스토리: 항상 isFocusing일 때 보여줌 */}
-                        {history && history.length > 0 && (
-                            <ul className={styles.header__searchResultsList}>
-                                {history.map((result: string) => (
-                                    <li
-                                        key={result}
-                                        onClick={() => handleHistoryClick(result)}
-                                        className={styles.header__searchHistoryItem}>
-                                        <Search
-                                            size={16}
-                                            className={styles.header__searchResultIcon}
-                                        />
-                                        <p className={styles.header__searchResultText}>{result}</p>
-                                        <X
-                                            size={18}
-                                            className={styles.header__searchHistoryDelete}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteSearchHistory(result);
-                                            }}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                        {/* 검색 결과 */}
-                        {isSearching ? (
-                            <div className={styles.header__searchLoading}>검색 중...</div>
-                        ) : searchResults.length > 0 ? (
-                            <>
+                    {/* 검색 결과 드롭다운 */}
+                    {isFocusing && (
+                        <div className={styles.header__searchResults}>
+                            {/* 히스토리: 항상 isFocusing일 때 보여줌 */}
+                            {history && history.length > 0 && (
                                 <ul className={styles.header__searchResultsList}>
-                                    {searchResults.map((result: Job) => (
+                                    {history.map((result: string) => (
                                         <li
-                                            key={result.id}
-                                            onClick={() => handleResultClick(result)}
-                                            className={styles.header__searchResultItem}>
-                                            <div className={styles.header__searchResultContent}>
-                                                <div className={styles.header__searchResultIcon}>
-                                                    <img
-                                                        rel="icon"
-                                                        src={`data:image/x-icon;base64,${result.favicon}`}
-                                                    />
-                                                </div>
-                                                <span>{result.title}</span>
-                                            </div>
+                                            key={result}
+                                            onClick={() => handleHistoryClick(result)}
+                                            className={styles.header__searchHistoryItem}>
+                                            <Search
+                                                size={16}
+                                                className={styles.header__searchResultIcon}
+                                            />
+                                            <p className={styles.header__searchResultText}>
+                                                {result}
+                                            </p>
+                                            <X
+                                                size={18}
+                                                className={styles.header__searchHistoryDelete}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteSearchHistory(result);
+                                                }}
+                                            />
                                         </li>
                                     ))}
                                 </ul>
-                                <button
-                                    className={styles.header__viewMoreButton}
-                                    onClick={handleViewMoreResults}>
-                                    검색 결과 더 보기
-                                    <ChevronRight size={16} />
-                                </button>
-                            </>
-                        ) : searchQuery.length > 1 ? (
-                            <div className={styles.header__searchNoResults}>
-                                검색 결과가 없습니다.
-                            </div>
-                        ) : null}
-                    </div>
-                )}
+                            )}
+                            {/* 검색 결과 */}
+                            {isSearching ? (
+                                <div className={styles.header__searchLoading}>검색 중...</div>
+                            ) : searchResults.length > 0 ? (
+                                <>
+                                    <ul className={styles.header__searchResultsList}>
+                                        {searchResults.map((result: Job) => (
+                                            <li
+                                                key={result.id}
+                                                onClick={() => handleResultClick(result)}
+                                                className={styles.header__searchResultItem}>
+                                                <div className={styles.header__searchResultContent}>
+                                                    <div
+                                                        className={styles.header__searchResultIcon}>
+                                                        <img
+                                                            rel="icon"
+                                                            src={`data:image/x-icon;base64,${result.favicon}`}
+                                                        />
+                                                    </div>
+                                                    <span>{result.title}</span>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <button
+                                        className={styles.header__viewMoreButton}
+                                        onClick={handleViewMoreResults}>
+                                        검색 결과 더 보기
+                                        <ChevronRight size={16} />
+                                    </button>
+                                </>
+                            ) : searchQuery.length > 1 ? (
+                                <div className={styles.header__searchNoResults}>
+                                    검색 결과가 없습니다.
+                                </div>
+                            ) : null}
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 

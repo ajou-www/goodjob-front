@@ -14,6 +14,9 @@
     width: 100%;
     justify-content: start;
     gap: 1.5rem;
+    @media (max-width: 480px) {
+        height: 45%;
+    }
 
     &__content {
         min-height: 88%;
