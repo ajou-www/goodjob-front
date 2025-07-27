@@ -382,8 +382,10 @@
 
 @media (max-width: 480px) {
     .jobList {
+        width: 100vw;
+
         &__filters {
-            padding: 0.5rem;
+            padding: 1rem 1rem;
             gap: 0.4rem;
         }
 

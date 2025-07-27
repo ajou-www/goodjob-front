@@ -10,7 +10,8 @@
     overflow: hidden; // Added to contain the blur effect
 
     @media (max-width: 480px) {
-        height: 100dvh;
+        height: 100%;
+        background: #f5f9fd;
     }
 
     // Blurred background circle

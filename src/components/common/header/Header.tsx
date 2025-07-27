@@ -13,6 +13,9 @@ function Header() {
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const navigate = useNavigate();
     const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
+    const path = location.pathname;
+
+    const hideLogo = path.includes('main');
 
     const userMenuItems = [
         {
@@ -62,7 +65,7 @@ function Header() {
 
                 <div className={style.header__container__subContainer}>
                     <p className={style.header__logo} onClick={moveToLandingPage}>
-                        goodJob
+                        {hideLogo ? '' : 'goodJob'}
                     </p>
                 </div>
 

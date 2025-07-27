@@ -21,6 +21,11 @@
         overflow-y: auto;
         border-radius: 20px;
         background-color: #ffffff;
+
+        @media (max-width: 480px) {
+            min-width: 100%;
+            max-width: 100%;
+        }
     }
 
     &__jobDetail {
@@ -47,6 +52,7 @@
 
     @media (max-width: 480px) {
         margin-left: 0;
+        margin-right: 0;
         padding-bottom: 60px;
 
         &__container {

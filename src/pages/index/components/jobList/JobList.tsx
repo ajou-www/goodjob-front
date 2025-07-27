@@ -321,8 +321,8 @@ function JobList() {
                                 isSelected={false}
                                 onSelect={() => {
                                     setSelectedJobDetail(job);
-                                    setGood();
-                                    sendClickEvent(job.id);
+                                    setGood(); // 유저 클릭 기록
+                                    sendClickEvent(job.id); // 유저 클릭 기록
                                 }}
                                 onToggleBookmark={() => toggleBookmark(job.id)}
                             />
