@@ -30,6 +30,7 @@ function MyCv() {
     const userCvList = useCvStore((state) => state.userCvList);
     const selectedCVId = useJobStore((state) => state.selectedCVId);
     const { getSelectedCvId } = useJobStore();
+    const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
     const navigate = useNavigate();
     const setPreviousPage = usePageStore((state) => state.setPreviousPage);
@@ -58,7 +59,7 @@ function MyCv() {
                 setIsSummaryLoading(false);
             }
         };
-        fetchCVSummary();
+        if (!isMobile) fetchCVSummary();
     }, [hasFile, userCvList, selectedCVId, action]);
 
     useEffect(() => {
@@ -84,27 +85,31 @@ function MyCv() {
             )}
             <div className={style.container}>
                 <div className={style.info}>
-                    <ErrorBoundary FallbackComponent={ErrorFallback}>
-                        {hasError ? (
-                            <div className={style.info__content__error}>
-                                <ErrorFallback />
-                            </div>
-                        ) : (
-                            <div className={style.info__content}>
-                                {isSummaryLoading ? (
-                                    <LoadingSpinner />
-                                ) : (
-                                    <Suspense fallback={<Loading content="Summary" />}>
-                                        <div
-                                            className={style.feedbackText}
-                                            dangerouslySetInnerHTML={{
-                                                __html: parseMarkdown(summaryText ?? ''),
-                                            }}></div>
-                                    </Suspense>
-                                )}
-                            </div>
-                        )}
-                    </ErrorBoundary>
+                    {isMobile ? (
+                        <></>
+                    ) : (
+                        <ErrorBoundary FallbackComponent={ErrorFallback}>
+                            {hasError ? (
+                                <div className={style.info__content__error}>
+                                    <ErrorFallback />
+                                </div>
+                            ) : (
+                                <div className={style.info__content}>
+                                    {isSummaryLoading ? (
+                                        <LoadingSpinner />
+                                    ) : (
+                                        <Suspense fallback={<Loading content="Summary" />}>
+                                            <div
+                                                className={style.feedbackText}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: parseMarkdown(summaryText ?? ''),
+                                                }}></div>
+                                        </Suspense>
+                                    )}
+                                </div>
+                            )}
+                        </ErrorBoundary>
+                    )}
 
                     <div className={style.buttons}>
                         <button className={style.button} onClick={handleDeleteCV}>

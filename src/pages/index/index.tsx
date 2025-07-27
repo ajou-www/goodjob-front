@@ -9,7 +9,7 @@ function Index() {
     const isCompactMenu = usePageStore((state) => state.isCompactMenu);
     const location = useLocation();
     const path = location.pathname;
-    const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
+    const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
     // admin 관련 경로에서는 MainHeader를 숨김
     const hideHeader =

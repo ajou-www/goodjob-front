@@ -6,6 +6,11 @@
     gap: 1.5rem;
     background-color: #f5f9fd;
     border-radius: 20px;
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        overflow-y: scroll;
+    }
 }
 
 .info {
@@ -14,9 +19,6 @@
     width: 100%;
     justify-content: start;
     gap: 1.5rem;
-    @media (max-width: 480px) {
-        height: 45%;
-    }
 
     &__content {
         min-height: 88%;
@@ -121,6 +123,7 @@
     max-width: 50%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     // background-color: white;
     border-radius: 16px;
     // overflow: hidden;
@@ -134,6 +137,8 @@
 
     .info,
     .cvviewer {
+        min-width: none;
+        max-width: none;
         width: 100%;
     }
 }
@@ -208,5 +213,4 @@
             margin-top: 15px;
         }
     }
-    // CVViewer styles are separate
 }

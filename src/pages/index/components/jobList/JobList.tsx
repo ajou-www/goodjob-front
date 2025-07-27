@@ -46,8 +46,8 @@ function JobList() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const jobsPerPage = 15;
-
     const TOTAL_JOB = 80;
+    const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
     // 파일 업로드에서 다른 pending 페이지를 만들어 1분 가량을 벌어야함
     // 현재 파일 업로드에서 10초의 시간을 확보
@@ -311,24 +311,117 @@ function JobList() {
                     ) : isLoading ? (
                         <LoadingAnime1 />
                     ) : (
-                        currentJobs.map((job) => (
-                            <JobCard
-                                key={job.id}
-                                job={{
-                                    ...job,
-                                    isBookmarked: !!bookmarkedList?.some((b) => b.id === job.id),
-                                }}
-                                isSelected={false}
-                                onSelect={() => {
-                                    setSelectedJobDetail(job);
-                                    setGood(); // 유저 클릭 기록
-                                    sendClickEvent(job.id); // 유저 클릭 기록
-                                }}
-                                onToggleBookmark={() => toggleBookmark(job.id)}
-                            />
-                        ))
+                        <>
+                            {currentJobs.map((job) => (
+                                <JobCard
+                                    key={job.id}
+                                    job={{
+                                        ...job,
+                                        isBookmarked: !!bookmarkedList?.some(
+                                            (b) => b.id === job.id
+                                        ),
+                                    }}
+                                    isSelected={false}
+                                    onSelect={() => {
+                                        setSelectedJobDetail(job);
+                                        setGood(); // 유저 클릭 기록
+                                        sendClickEvent(job.id); // 유저 클릭 기록
+                                    }}
+                                    onToggleBookmark={() => toggleBookmark(job.id)}
+                                />
+                            ))}
+                            {isMobile ? (
+                                <div className={styles.jobList__pagination}>
+                                    {calculatedTotalPages > 1 && (
+                                        <>
+                                            <button
+                                                className={`${styles.jobList__paginationButton} ${
+                                                    currentPage === 1 ? styles.disabled : ''
+                                                }`}
+                                                onClick={goToPreviousPage}
+                                                disabled={currentPage === 1}>
+                                                이전
+                                            </button>
+
+                                            <div className={styles.jobList__paginationNumbers}>
+                                                {Array.from(
+                                                    { length: calculatedTotalPages },
+                                                    (_, i) => i + 1
+                                                )
+                                                    .filter(
+                                                        (page) =>
+                                                            page === 1 ||
+                                                            page === calculatedTotalPages ||
+                                                            Math.abs(page - currentPage) <= 1
+                                                    )
+                                                    .map((page, index, array) => {
+                                                        if (
+                                                            index > 0 &&
+                                                            array[index - 1] !== page - 1
+                                                        ) {
+                                                            return (
+                                                                <React.Fragment
+                                                                    key={`ellipsis-${page}`}>
+                                                                    <span
+                                                                        className={
+                                                                            styles.jobList__paginationEllipsis
+                                                                        }>
+                                                                        ...
+                                                                    </span>
+                                                                    <button
+                                                                        className={`${
+                                                                            styles.jobList__paginationNumber
+                                                                        } ${
+                                                                            currentPage === page
+                                                                                ? styles.active
+                                                                                : ''
+                                                                        }`}
+                                                                        onClick={() =>
+                                                                            handlePageChange(page)
+                                                                        }>
+                                                                        {page}
+                                                                    </button>
+                                                                </React.Fragment>
+                                                            );
+                                                        }
+                                                        return (
+                                                            <button
+                                                                key={page}
+                                                                className={`${
+                                                                    styles.jobList__paginationNumber
+                                                                } ${
+                                                                    currentPage === page
+                                                                        ? styles.active
+                                                                        : ''
+                                                                }`}
+                                                                onClick={() =>
+                                                                    handlePageChange(page)
+                                                                }>
+                                                                {page}
+                                                            </button>
+                                                        );
+                                                    })}
+                                            </div>
+
+                                            <button
+                                                className={`${styles.jobList__paginationButton} ${
+                                                    currentPage === calculatedTotalPages
+                                                        ? styles.disabled
+                                                        : ''
+                                                }`}
+                                                onClick={goToNextPage}
+                                                disabled={currentPage === calculatedTotalPages}>
+                                                다음
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </>
                     )}
-                    {hasError || isLoading ? (
+                    {hasError || isLoading || isMobile ? (
                         ''
                     ) : (
                         <div className={styles.jobList__pagination}>

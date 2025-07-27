@@ -18,4 +18,8 @@
         color: #666;
         margin: 0;
     }
+
+    @media (max-width: 480px) {
+        max-height: 65%;
+    }
 }
