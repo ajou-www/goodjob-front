@@ -8,6 +8,10 @@
     padding: 2rem 1rem;
     position: relative;
 
+    @media (max-width: 480px) {
+        min-height: 100dvh;
+    }
+
     // 블러 배경 원
     &::before {
         content: '';

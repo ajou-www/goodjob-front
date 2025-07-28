@@ -12,12 +12,14 @@ import useActionStore from '../../../../store/actionStore';
 import useUserStore from '../../../../store/userStore';
 import UserFeedbackDialog from '../../../../components/common/dialog/UserFeedbackDialog';
 import useLogStore from '../../../../store/logStore';
+import JobDetailDialog from '../bookmark/JobDetailDialog';
 
 function JobList() {
     const [activeFilter, setActiveFilter] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
     const [hasError, setHasError] = useState(false);
+    const [isJobDetailDialogOpen, setIsJobDetailDialogOpen] = useState(false);
 
     const selectedCVId = useJobStore((state) => state.selectedCVId);
     const { setIsJobListLoad } = useActionStore();
@@ -268,245 +270,262 @@ function JobList() {
     // 피드백 다이얼로그와 연관 공고 다이얼로그 분리해야함
 
     return (
-        <div className={styles.jobList} ref={jobListRef}>
-            {visited === 9 && isDialogOpen ? (
-                <UserFeedbackDialog onClose={() => setIsDialogOpen(false)} />
-            ) : (
-                ''
+        <>
+            {isJobDetailDialogOpen && isMobile && (
+                <JobDetailDialog
+                    isOpen={isJobDetailDialogOpen}
+                    onClose={() => setIsJobDetailDialogOpen(false)}
+                />
             )}
-            {hasError || isLoading ? (
-                ''
-            ) : (
-                <div className={styles.jobList__filters}>
-                    <div
-                        className={`${styles.jobList__filterButton} ${
-                            activeFilter === '경력' ? styles.active : ''
-                        }`}
-                        ref={experienceButtonRef}
-                        onMouseDown={() =>
-                            setActiveFilter((prev) => (prev === '경력' ? '' : '경력'))
-                        }>
-                        경력
-                    </div>
-                    {activeFilter === '경력' && <JobExperienceFilter />}
-
-                    <div
-                        className={`${styles.jobList__filterButton} ${
-                            activeFilter === '근무 유형' ? styles.active : ''
-                        }`}
-                        onMouseDown={() =>
-                            setActiveFilter((prev) => (prev === '근무 유형' ? '' : '근무 유형'))
-                        }
-                        ref={typeButtonRef}>
-                        근무 유형
-                    </div>
-                    {activeFilter === '근무 유형' && <JobTypeFilter />}
-                </div>
-            )}
-
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-                <div className={styles.jobList__content}>
-                    {hasError ? (
-                        <ErrorFallback />
-                    ) : isLoading ? (
-                        <LoadingAnime1 />
-                    ) : (
-                        <>
-                            {currentJobs.map((job) => (
-                                <JobCard
-                                    key={job.id}
-                                    job={{
-                                        ...job,
-                                        isBookmarked: !!bookmarkedList?.some(
-                                            (b) => b.id === job.id
-                                        ),
-                                    }}
-                                    isSelected={false}
-                                    onSelect={() => {
-                                        setSelectedJobDetail(job);
-                                        setGood(); // 유저 클릭 기록
-                                        sendClickEvent(job.id); // 유저 클릭 기록
-                                    }}
-                                    onToggleBookmark={() => toggleBookmark(job.id)}
-                                />
-                            ))}
-                            {isMobile ? (
-                                <div className={styles.jobList__pagination}>
-                                    {calculatedTotalPages > 1 && (
-                                        <>
-                                            <button
-                                                className={`${styles.jobList__paginationButton} ${
-                                                    currentPage === 1 ? styles.disabled : ''
-                                                }`}
-                                                onClick={goToPreviousPage}
-                                                disabled={currentPage === 1}>
-                                                이전
-                                            </button>
-
-                                            <div className={styles.jobList__paginationNumbers}>
-                                                {Array.from(
-                                                    { length: calculatedTotalPages },
-                                                    (_, i) => i + 1
-                                                )
-                                                    .filter(
-                                                        (page) =>
-                                                            page === 1 ||
-                                                            page === calculatedTotalPages ||
-                                                            Math.abs(page - currentPage) <= 1
-                                                    )
-                                                    .map((page, index, array) => {
-                                                        if (
-                                                            index > 0 &&
-                                                            array[index - 1] !== page - 1
-                                                        ) {
-                                                            return (
-                                                                <React.Fragment
-                                                                    key={`ellipsis-${page}`}>
-                                                                    <span
-                                                                        className={
-                                                                            styles.jobList__paginationEllipsis
-                                                                        }>
-                                                                        ...
-                                                                    </span>
-                                                                    <button
-                                                                        className={`${
-                                                                            styles.jobList__paginationNumber
-                                                                        } ${
-                                                                            currentPage === page
-                                                                                ? styles.active
-                                                                                : ''
-                                                                        }`}
-                                                                        onClick={() =>
-                                                                            handlePageChange(page)
-                                                                        }>
-                                                                        {page}
-                                                                    </button>
-                                                                </React.Fragment>
-                                                            );
-                                                        }
-                                                        return (
-                                                            <button
-                                                                key={page}
-                                                                className={`${
-                                                                    styles.jobList__paginationNumber
-                                                                } ${
-                                                                    currentPage === page
-                                                                        ? styles.active
-                                                                        : ''
-                                                                }`}
-                                                                onClick={() =>
-                                                                    handlePageChange(page)
-                                                                }>
-                                                                {page}
-                                                            </button>
-                                                        );
-                                                    })}
-                                            </div>
-
-                                            <button
-                                                className={`${styles.jobList__paginationButton} ${
-                                                    currentPage === calculatedTotalPages
-                                                        ? styles.disabled
-                                                        : ''
-                                                }`}
-                                                onClick={goToNextPage}
-                                                disabled={currentPage === calculatedTotalPages}>
-                                                다음
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            ) : (
-                                <></>
-                            )}
-                        </>
-                    )}
-                    {hasError || isLoading || isMobile ? (
-                        ''
-                    ) : (
-                        <div className={styles.jobList__pagination}>
-                            {calculatedTotalPages > 1 && (
-                                <>
-                                    <button
-                                        className={`${styles.jobList__paginationButton} ${
-                                            currentPage === 1 ? styles.disabled : ''
-                                        }`}
-                                        onClick={goToPreviousPage}
-                                        disabled={currentPage === 1}>
-                                        이전
-                                    </button>
-
-                                    <div className={styles.jobList__paginationNumbers}>
-                                        {Array.from(
-                                            { length: calculatedTotalPages },
-                                            (_, i) => i + 1
-                                        )
-                                            .filter(
-                                                (page) =>
-                                                    page === 1 ||
-                                                    page === calculatedTotalPages ||
-                                                    Math.abs(page - currentPage) <= 1
-                                            )
-                                            .map((page, index, array) => {
-                                                if (index > 0 && array[index - 1] !== page - 1) {
-                                                    return (
-                                                        <React.Fragment key={`ellipsis-${page}`}>
-                                                            <span
-                                                                className={
-                                                                    styles.jobList__paginationEllipsis
-                                                                }>
-                                                                ...
-                                                            </span>
-                                                            <button
-                                                                className={`${
-                                                                    styles.jobList__paginationNumber
-                                                                } ${
-                                                                    currentPage === page
-                                                                        ? styles.active
-                                                                        : ''
-                                                                }`}
-                                                                onClick={() =>
-                                                                    handlePageChange(page)
-                                                                }>
-                                                                {page}
-                                                            </button>
-                                                        </React.Fragment>
-                                                    );
-                                                }
-                                                return (
-                                                    <button
-                                                        key={page}
-                                                        className={`${
-                                                            styles.jobList__paginationNumber
-                                                        } ${
-                                                            currentPage === page
-                                                                ? styles.active
-                                                                : ''
-                                                        }`}
-                                                        onClick={() => handlePageChange(page)}>
-                                                        {page}
-                                                    </button>
-                                                );
-                                            })}
-                                    </div>
-
-                                    <button
-                                        className={`${styles.jobList__paginationButton} ${
-                                            currentPage === calculatedTotalPages
-                                                ? styles.disabled
-                                                : ''
-                                        }`}
-                                        onClick={goToNextPage}
-                                        disabled={currentPage === calculatedTotalPages}>
-                                        다음
-                                    </button>
-                                </>
-                            )}
+            <div className={styles.jobList} ref={jobListRef}>
+                {visited === 9 && isDialogOpen ? (
+                    <UserFeedbackDialog onClose={() => setIsDialogOpen(false)} />
+                ) : (
+                    ''
+                )}
+                {hasError || isLoading ? (
+                    ''
+                ) : (
+                    <div className={styles.jobList__filters}>
+                        <div
+                            className={`${styles.jobList__filterButton} ${
+                                activeFilter === '경력' ? styles.active : ''
+                            }`}
+                            ref={experienceButtonRef}
+                            onMouseDown={() =>
+                                setActiveFilter((prev) => (prev === '경력' ? '' : '경력'))
+                            }>
+                            경력
                         </div>
-                    )}
-                </div>
-            </ErrorBoundary>
-        </div>
+                        {activeFilter === '경력' && <JobExperienceFilter />}
+
+                        <div
+                            className={`${styles.jobList__filterButton} ${
+                                activeFilter === '근무 유형' ? styles.active : ''
+                            }`}
+                            onMouseDown={() =>
+                                setActiveFilter((prev) => (prev === '근무 유형' ? '' : '근무 유형'))
+                            }
+                            ref={typeButtonRef}>
+                            근무 유형
+                        </div>
+                        {activeFilter === '근무 유형' && <JobTypeFilter />}
+                    </div>
+                )}
+
+                <ErrorBoundary FallbackComponent={ErrorFallback}>
+                    <div className={styles.jobList__content}>
+                        {hasError ? (
+                            <ErrorFallback />
+                        ) : isLoading ? (
+                            <LoadingAnime1 />
+                        ) : (
+                            <>
+                                {currentJobs.map((job) => (
+                                    <JobCard
+                                        key={job.id}
+                                        job={{
+                                            ...job,
+                                            isBookmarked: !!bookmarkedList?.some(
+                                                (b) => b.id === job.id
+                                            ),
+                                        }}
+                                        isSelected={false}
+                                        onSelect={() => {
+                                            setIsJobDetailDialogOpen(true);
+                                            setSelectedJobDetail(job);
+                                            setGood(); // 유저 클릭 기록
+                                            sendClickEvent(job.id); // 유저 클릭 기록
+                                        }}
+                                        onToggleBookmark={() => toggleBookmark(job.id)}
+                                    />
+                                ))}
+                                {isMobile ? (
+                                    <div className={styles.jobList__pagination}>
+                                        {calculatedTotalPages > 1 && (
+                                            <>
+                                                <button
+                                                    className={`${
+                                                        styles.jobList__paginationButton
+                                                    } ${currentPage === 1 ? styles.disabled : ''}`}
+                                                    onClick={goToPreviousPage}
+                                                    disabled={currentPage === 1}>
+                                                    이전
+                                                </button>
+
+                                                <div className={styles.jobList__paginationNumbers}>
+                                                    {Array.from(
+                                                        { length: calculatedTotalPages },
+                                                        (_, i) => i + 1
+                                                    )
+                                                        .filter(
+                                                            (page) =>
+                                                                page === 1 ||
+                                                                page === calculatedTotalPages ||
+                                                                Math.abs(page - currentPage) <= 1
+                                                        )
+                                                        .map((page, index, array) => {
+                                                            if (
+                                                                index > 0 &&
+                                                                array[index - 1] !== page - 1
+                                                            ) {
+                                                                return (
+                                                                    <React.Fragment
+                                                                        key={`ellipsis-${page}`}>
+                                                                        <span
+                                                                            className={
+                                                                                styles.jobList__paginationEllipsis
+                                                                            }>
+                                                                            ...
+                                                                        </span>
+                                                                        <button
+                                                                            className={`${
+                                                                                styles.jobList__paginationNumber
+                                                                            } ${
+                                                                                currentPage === page
+                                                                                    ? styles.active
+                                                                                    : ''
+                                                                            }`}
+                                                                            onClick={() =>
+                                                                                handlePageChange(
+                                                                                    page
+                                                                                )
+                                                                            }>
+                                                                            {page}
+                                                                        </button>
+                                                                    </React.Fragment>
+                                                                );
+                                                            }
+                                                            return (
+                                                                <button
+                                                                    key={page}
+                                                                    className={`${
+                                                                        styles.jobList__paginationNumber
+                                                                    } ${
+                                                                        currentPage === page
+                                                                            ? styles.active
+                                                                            : ''
+                                                                    }`}
+                                                                    onClick={() =>
+                                                                        handlePageChange(page)
+                                                                    }>
+                                                                    {page}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                </div>
+
+                                                <button
+                                                    className={`${
+                                                        styles.jobList__paginationButton
+                                                    } ${
+                                                        currentPage === calculatedTotalPages
+                                                            ? styles.disabled
+                                                            : ''
+                                                    }`}
+                                                    onClick={goToNextPage}
+                                                    disabled={currentPage === calculatedTotalPages}>
+                                                    다음
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                            </>
+                        )}
+                        {hasError || isLoading || isMobile ? (
+                            ''
+                        ) : (
+                            <div className={styles.jobList__pagination}>
+                                {calculatedTotalPages > 1 && (
+                                    <>
+                                        <button
+                                            className={`${styles.jobList__paginationButton} ${
+                                                currentPage === 1 ? styles.disabled : ''
+                                            }`}
+                                            onClick={goToPreviousPage}
+                                            disabled={currentPage === 1}>
+                                            이전
+                                        </button>
+
+                                        <div className={styles.jobList__paginationNumbers}>
+                                            {Array.from(
+                                                { length: calculatedTotalPages },
+                                                (_, i) => i + 1
+                                            )
+                                                .filter(
+                                                    (page) =>
+                                                        page === 1 ||
+                                                        page === calculatedTotalPages ||
+                                                        Math.abs(page - currentPage) <= 1
+                                                )
+                                                .map((page, index, array) => {
+                                                    if (
+                                                        index > 0 &&
+                                                        array[index - 1] !== page - 1
+                                                    ) {
+                                                        return (
+                                                            <React.Fragment
+                                                                key={`ellipsis-${page}`}>
+                                                                <span
+                                                                    className={
+                                                                        styles.jobList__paginationEllipsis
+                                                                    }>
+                                                                    ...
+                                                                </span>
+                                                                <button
+                                                                    className={`${
+                                                                        styles.jobList__paginationNumber
+                                                                    } ${
+                                                                        currentPage === page
+                                                                            ? styles.active
+                                                                            : ''
+                                                                    }`}
+                                                                    onClick={() =>
+                                                                        handlePageChange(page)
+                                                                    }>
+                                                                    {page}
+                                                                </button>
+                                                            </React.Fragment>
+                                                        );
+                                                    }
+                                                    return (
+                                                        <button
+                                                            key={page}
+                                                            className={`${
+                                                                styles.jobList__paginationNumber
+                                                            } ${
+                                                                currentPage === page
+                                                                    ? styles.active
+                                                                    : ''
+                                                            }`}
+                                                            onClick={() => handlePageChange(page)}>
+                                                            {page}
+                                                        </button>
+                                                    );
+                                                })}
+                                        </div>
+
+                                        <button
+                                            className={`${styles.jobList__paginationButton} ${
+                                                currentPage === calculatedTotalPages
+                                                    ? styles.disabled
+                                                    : ''
+                                            }`}
+                                            onClick={goToNextPage}
+                                            disabled={currentPage === calculatedTotalPages}>
+                                            다음
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </ErrorBoundary>
+            </div>
+        </>
     );
 }
 

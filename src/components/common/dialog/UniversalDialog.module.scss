@@ -105,6 +105,10 @@
         width: 100%;
         height: 100%;
         border-radius: 0;
+        min-width: unset;
+        max-width: unset;
+        min-height: unset;
+        max-height: unset;
     }
 }
 
@@ -511,21 +515,20 @@
 }
 
 @media (max-width: 480px) {
+    .dialog {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        min-width: unset;
+        max-width: unset;
+        min-height: unset;
+        max-height: unset;
+    }
     .container {
         padding: 1rem;
     }
 
     .title {
         font-size: 1.25rem;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-
-        &__actions {
-            align-self: flex-end;
-        }
     }
 }

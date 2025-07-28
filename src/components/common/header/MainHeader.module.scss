@@ -146,6 +146,9 @@
             margin: 0;
             max-height: 350px;
             overflow-y: auto;
+            @media (max-width: 460px) {
+                max-height: unset;
+            }
 
             &::-webkit-scrollbar {
                 width: 6px;

@@ -3,7 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import useFileStore from '../../../../store/fileStore';
 import CvViewer from './CvViewer';
 import style from './styles/MyCv.module.scss';
-import { Trash, CloudUpload } from 'lucide-react';
+import { Trash, CloudUpload, ScrollText } from 'lucide-react';
 import CVReuploadDialog from '../../../../components/common/dialog/CVReuploadDialog';
 import Loading from '../../../../components/common/loading/Loading';
 import ErrorFallback from '../../../../components/common/error/ErrorFallback';
@@ -15,6 +15,7 @@ import useJobStore from '../../../../store/jobStore';
 import usePageStore from '../../../../store/pageStore';
 import CVDeleteDialog from '../../../../components/common/dialog/CVDeleteDialog';
 import useActionStore from '../../../../store/actionStore';
+import CVSummaryDialog from '../../../../components/common/dialog/CVSummaryDialog';
 
 function MyCv() {
     const { getSummary } = useFileStore();
@@ -25,6 +26,7 @@ function MyCv() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [reuploadDialogHidden, setReuploadDialogHidden] = useState(false);
     const [deleteDialogHidden, setDeleteDialogHidden] = useState(false);
+    const [summaryDialogHidden, setSummaryDialogHidden] = useState(false);
     const hasFile = useFileStore((state) => state.hasFile);
     const summaryText = useFileStore((state) => state.summary);
     const userCvList = useCvStore((state) => state.userCvList);
@@ -45,6 +47,10 @@ function MyCv() {
         navigate('/upload');
     };
 
+    const viewSummary = () => {
+        setSummaryDialogHidden((prev) => !prev);
+    };
+
     useEffect(() => {
         const fetchCVSummary = async () => {
             try {
@@ -59,7 +65,7 @@ function MyCv() {
                 setIsSummaryLoading(false);
             }
         };
-        if (!isMobile) fetchCVSummary();
+        fetchCVSummary();
     }, [hasFile, userCvList, selectedCVId, action]);
 
     useEffect(() => {
@@ -70,6 +76,12 @@ function MyCv() {
 
     return (
         <>
+            {summaryDialogHidden && (
+                <CVSummaryDialog
+                    isOpen={summaryDialogHidden}
+                    onClose={() => setSummaryDialogHidden((prev) => !prev)}
+                />
+            )}
             {deleteDialogHidden && (
                 <CVDeleteDialog
                     isOpen={deleteDialogHidden}
@@ -86,7 +98,10 @@ function MyCv() {
             <div className={style.container}>
                 <div className={style.info}>
                     {isMobile ? (
-                        <></>
+                        <button className={style.button} onClick={viewSummary}>
+                            <ScrollText size={18} />
+                            나의 CV 요약 보기
+                        </button>
                     ) : (
                         <ErrorBoundary FallbackComponent={ErrorFallback}>
                             {hasError ? (
