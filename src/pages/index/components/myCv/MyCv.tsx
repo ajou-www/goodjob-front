@@ -80,6 +80,8 @@ function MyCv() {
                 <CVSummaryDialog
                     isOpen={summaryDialogHidden}
                     onClose={() => setSummaryDialogHidden((prev) => !prev)}
+                    isSummaryLoading={isSummaryLoading}
+                    hasError={hasError}
                 />
             )}
             {deleteDialogHidden && (

@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import style from './styles/CVSummaryDialog.module.scss';
 import { X } from 'lucide-react';
 import { parseMarkdown } from '../../../utils/markdown';
@@ -10,14 +10,14 @@ import useFileStore from '../../../store/fileStore';
 
 interface CVSummaryDialogProps {
     isOpen: boolean;
+    isSummaryLoading: boolean;
+    hasError: boolean;
     onClose: () => void;
 }
 
-function CVSummaryDialog({ isOpen, onClose }: CVSummaryDialogProps) {
+function CVSummaryDialog({ isOpen, onClose, isSummaryLoading, hasError }: CVSummaryDialogProps) {
     const dialogRef = useRef<HTMLDivElement>(null);
     const summaryText = useFileStore((state) => state.summary);
-    const [hasError, setHasError] = useState(false);
-    const [isSummaryLoading, setIsSummaryLoading] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
