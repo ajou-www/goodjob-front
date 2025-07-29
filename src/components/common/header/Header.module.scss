@@ -6,6 +6,16 @@
     padding: 2.5rem 2rem;
     position: relative;
 
+    @media (max-width: 480px) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        z-index: 999;
+        background-color: #f5f9fd;
+    }
+
     &__container {
         width: 100%;
         display: flex;

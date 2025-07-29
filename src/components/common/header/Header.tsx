@@ -55,7 +55,6 @@ function Header() {
     return (
         <header className={style.header}>
             <div className={style.header__container}>
-                {/* Menu button (visible on mobile only) */}
                 <button
                     className={style.header__menuButton}
                     onClick={toggleMobileMenu}
