@@ -10,6 +10,7 @@
 
     @media (max-width: 480px) {
         padding: 0 0rem;
+        overflow-y: scroll;
     }
 }
 
@@ -45,6 +46,10 @@
     overflow-y: auto;
     padding: 0.5rem 0.25rem;
     align-content: start;
+
+    @media (max-width: 480px) {
+        overflow-y: unset;
+    }
 
     &::-webkit-scrollbar {
         width: 6px;
