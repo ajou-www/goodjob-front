@@ -314,7 +314,10 @@ function JobList() {
                 )}
 
                 <ErrorBoundary FallbackComponent={ErrorFallback}>
-                    <div className={styles.jobList__content}>
+                    <div
+                        className={`${styles.jobList__content} ${
+                            isLoading ? styles.hideBackground : ''
+                        }`}>
                         {hasError ? (
                             <ErrorFallback />
                         ) : isLoading ? (

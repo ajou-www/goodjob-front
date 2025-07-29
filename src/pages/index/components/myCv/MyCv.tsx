@@ -100,9 +100,11 @@ function MyCv() {
             <div className={style.container}>
                 <div className={style.info}>
                     {isMobile ? (
-                        <button className={style.button} onClick={viewSummary}>
+                        <button
+                            className={`${style.button} ${style.normalButton}`}
+                            onClick={viewSummary}>
                             <ScrollText size={18} />
-                            나의 CV 요약 보기
+                            나의 CV 요약
                         </button>
                     ) : (
                         <ErrorBoundary FallbackComponent={ErrorFallback}>
@@ -129,7 +131,9 @@ function MyCv() {
                     )}
 
                     <div className={style.buttons}>
-                        <button className={style.button} onClick={handleDeleteCV}>
+                        <button
+                            className={`${style.button} ${style.criticalButton}`}
+                            onClick={handleDeleteCV}>
                             <Trash size={18} />
                             업로드된 모든 CV 제거
                         </button>

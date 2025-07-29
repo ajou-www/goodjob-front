@@ -26,6 +26,7 @@ function ManageItem({
     const noteInputRef = useRef<HTMLTextAreaElement>(null);
     const statusDropdownRef = useRef<HTMLDivElement>(null);
     const actionsMenuRef = useRef<HTMLDivElement>(null);
+    const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
     // 상태에 따른 색상 매핑
     const getStatusColor = (status: string) => {
@@ -111,107 +112,196 @@ function ManageItem({
         return date.toLocaleDateString();
     };
 
+    const handleCardClick = () => {
+        // setSelectedJobDetail(job);
+        // setSelectedJobId(job.id);s
+        // setIsDialogOpen(true);
+    };
+
     return (
-        <div className={style.item}>
-            <div className={style.item__cell}>
-                <div className={style.item__text}>{job.jobTitle}</div>
-            </div>
-
-            <div className={style.item__cell}>
-                <div className={style.item__text}>{job.companyName}</div>
-            </div>
-
-            <div className={style.item__cell}>
-                <div className={style.item__date}>{formatDate(job.createdAt)}</div>
-            </div>
-
-            <div className={style.item__cell}>
-                {isEditingNote ? (
-                    <div className={style.item__editField}>
-                        <textarea
-                            ref={noteInputRef}
-                            value={editedNote}
-                            onChange={(e) => setEditedNote(e.target.value)}
-                            className={style.item__textarea}
-                            placeholder="메모를 입력하세요..."
-                        />
-                        <div className={style.item__editActions}>
-                            <button className={style.item__editButton} onClick={handleNoteSave}>
-                                <Check size={16} />
-                            </button>
-                            <button className={style.item__editButton} onClick={handleNoteCancel}>
-                                <X size={16} />
-                            </button>
+        <>
+            {isMobile ? (
+                <>
+                    <div className={style.jobCard} onClick={handleCardClick}>
+                        <div className={style.jobCard__header}>
+                            <div className={style.jobCard__companyInfo}>
+                                <div className={style.jobCard__companyName}>{job.companyName}</div>
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <div
-                        className={`${style.item__note} ${
-                            !job.note ? style.item__notePlaceholder : ''
-                        }`}
-                        onClick={handleNoteEdit}>
-                        {job.note || '메모 추가...'}
-                    </div>
-                )}
-            </div>
 
-            <div className={style.item__cell}>
-                <div className={style.item__statusContainer} ref={statusDropdownRef}>
-                    <button
-                        className={style.item__status}
-                        onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                        style={{ backgroundColor: getStatusColor(job.applyStatus) }}>
-                        {job.applyStatus}
-                    </button>
+                        <div className={style.jobCard__content}>
+                            <h3 className={style.jobCard__title}>{job.jobTitle}</h3>
 
-                    {showStatusDropdown && (
-                        <div
-                            className={`${style.item__statusDropdown} ${
-                                dropUp ? style.dropUp : ''
-                            }`}>
-                            {statusOptions.map((status) => (
-                                <div
-                                    key={status}
-                                    className={style.item__statusOption}
-                                    onClick={() => {
-                                        onStatusChange(status);
-                                        setShowStatusDropdown(false);
-                                    }}>
-                                    <span
-                                        className={style.item__statusDot}
-                                        style={{ backgroundColor: getStatusColor(status) }}></span>
-                                    {status}
+                            <div className={style.jobCard__footer}>
+                                <p>{job.applyEndDate}</p>
+                                <p>{formatDate(job.createdAt)}</p>
+                                <div className={style.jobCard__tags}>
+                                    <div className={style.jobCard__tags__container}>
+                                        <div
+                                            className={style.item__statusContainer}
+                                            ref={statusDropdownRef}>
+                                            <button
+                                                className={style.item__status}
+                                                onClick={() =>
+                                                    setShowStatusDropdown(!showStatusDropdown)
+                                                }
+                                                style={{
+                                                    backgroundColor: getStatusColor(
+                                                        job.applyStatus
+                                                    ),
+                                                }}>
+                                                {job.applyStatus}
+                                            </button>
+
+                                            {showStatusDropdown && (
+                                                <div
+                                                    className={`${style.item__statusDropdown} ${
+                                                        dropUp ? style.dropUp : ''
+                                                    }`}>
+                                                    {statusOptions.map((status) => (
+                                                        <div
+                                                            key={status}
+                                                            className={style.item__statusOption}
+                                                            onClick={() => {
+                                                                onStatusChange(status);
+                                                                setShowStatusDropdown(false);
+                                                            }}>
+                                                            <span
+                                                                className={style.item__statusDot}
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        getStatusColor(status),
+                                                                }}></span>
+                                                            {status}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
+                            </div>
+
+                            {/* <div className={style.jobCard__footer}>
+                                <button
+                                    className={style.jobCard__viewButton}
+                                    onClick={handleCardClick}>
+                                    <ExternalLink size={16} />
+                                    <span>상세보기</span>
+                                </button>
+                            </div> */}
                         </div>
-                    )}
-                </div>
-            </div>
+                    </div>
+                </>
+            ) : (
+                <div className={style.item}>
+                    <div className={style.item__cell}>
+                        <div className={style.item__text}>{job.jobTitle}</div>
+                    </div>
 
-            <div className={style.item__cell}>
-                <div className={style.item__actions} ref={actionsMenuRef}>
-                    <button
-                        className={style.item__actionsButton}
-                        onClick={() => setShowActions(!showActions)}>
-                        <MoreHorizontal size={16} />
-                    </button>
+                    <div className={style.item__cell}>
+                        <div className={style.item__text}>{job.companyName}</div>
+                    </div>
 
-                    {showActions && (
-                        <div className={style.item__actionsMenu}>
+                    <div className={style.item__cell}>
+                        <div className={style.item__date}>{formatDate(job.createdAt)}</div>
+                    </div>
+
+                    <div className={style.item__cell}>
+                        {isEditingNote ? (
+                            <div className={style.item__editField}>
+                                <textarea
+                                    ref={noteInputRef}
+                                    value={editedNote}
+                                    onChange={(e) => setEditedNote(e.target.value)}
+                                    className={style.item__textarea}
+                                    placeholder="메모를 입력하세요..."
+                                />
+                                <div className={style.item__editActions}>
+                                    <button
+                                        className={style.item__editButton}
+                                        onClick={handleNoteSave}>
+                                        <Check size={16} />
+                                    </button>
+                                    <button
+                                        className={style.item__editButton}
+                                        onClick={handleNoteCancel}>
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div
+                                className={`${style.item__note} ${
+                                    !job.note ? style.item__notePlaceholder : ''
+                                }`}
+                                onClick={handleNoteEdit}>
+                                {job.note || '메모 추가...'}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={style.item__cell}>
+                        <div className={style.item__statusContainer} ref={statusDropdownRef}>
                             <button
-                                className={`${style.item__actionsMenuItem} ${style.item__actionsMenuItemDanger}`}
-                                onClick={() => {
-                                    onRemove();
-                                    setShowActions(false);
-                                }}>
-                                <Trash size={14} />
-                                <span>삭제</span>
+                                className={style.item__status}
+                                onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                                style={{ backgroundColor: getStatusColor(job.applyStatus) }}>
+                                {job.applyStatus}
                             </button>
+
+                            {showStatusDropdown && (
+                                <div
+                                    className={`${style.item__statusDropdown} ${
+                                        dropUp ? style.dropUp : ''
+                                    }`}>
+                                    {statusOptions.map((status) => (
+                                        <div
+                                            key={status}
+                                            className={style.item__statusOption}
+                                            onClick={() => {
+                                                onStatusChange(status);
+                                                setShowStatusDropdown(false);
+                                            }}>
+                                            <span
+                                                className={style.item__statusDot}
+                                                style={{
+                                                    backgroundColor: getStatusColor(status),
+                                                }}></span>
+                                            {status}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
+
+                    <div className={style.item__cell}>
+                        <div className={style.item__actions} ref={actionsMenuRef}>
+                            <button
+                                className={style.item__actionsButton}
+                                onClick={() => setShowActions(!showActions)}>
+                                <MoreHorizontal size={16} />
+                            </button>
+
+                            {showActions && (
+                                <div className={style.item__actionsMenu}>
+                                    <button
+                                        className={`${style.item__actionsMenuItem} ${style.item__actionsMenuItemDanger}`}
+                                        onClick={() => {
+                                            onRemove();
+                                            setShowActions(false);
+                                        }}>
+                                        <Trash size={14} />
+                                        <span>삭제</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            )}
+        </>
     );
 }
 

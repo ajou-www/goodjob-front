@@ -20,6 +20,15 @@
     }
 
     @media (max-width: 480px) {
-        max-height: 65%;
+        // max-height: 65%;
+        // min-height: 65%;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-height: 60%;
+        min-width: 100%;
+
+        z-index: 100;
     }
 }

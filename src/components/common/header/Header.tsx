@@ -12,7 +12,7 @@ function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const navigate = useNavigate();
-    const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
+    const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
     const path = location.pathname;
 
     const hideLogo = path.includes('main');
@@ -115,7 +115,9 @@ function Header() {
             {/* Mobile Menu */}
             <div className={`${style.mobileMenu} ${mobileMenuOpen ? style.active : ''}`}>
                 <div className={style.mobileMenu__header}>
-                    <p className={style.mobileMenu__logo}>goodJob</p>
+                    <p className={style.mobileMenu__logo} onClick={moveToLandingPage}>
+                        goodJob
+                    </p>
                     <button
                         className={style.mobileMenu__close}
                         onClick={toggleMobileMenu}

@@ -333,6 +333,12 @@
     display: none;
 }
 
+.hideBackground {
+    @media (max-width: 480px) {
+        background: #f5f9fd;
+    }
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
