@@ -3,6 +3,7 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    height: auto;
     max-height: 100vh;
     min-height: 100vh;
     background-color: #f5f9fd;
@@ -112,5 +113,14 @@
         &__container {
             padding: 0rem;
         }
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    .page {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
     }
 }
