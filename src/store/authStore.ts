@@ -25,7 +25,7 @@ const useAuthStore = create<AuthStore>()(
             // 수정 필요
             fetchAuthData: async () => {},
             setLogout: async (accessToken) => {
-                const res = await axios.post(`${SERVER_IP}/auth/logout`, {
+                const res = await axios.post(`${SERVER_IP}/auth/logout`, null, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,
                 });
