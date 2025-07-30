@@ -2,12 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import type application from '../../../../types/application';
 import style from './styles/ManageItem.module.scss';
 import { Trash, Check, X, MoreHorizontal } from 'lucide-react';
+import CalendarDialog from '../../../../components/common/dialog/CalendarDialog';
 
 interface ManageItemProps {
     job: application;
     onRemove: () => void;
     onStatusChange: (status: string) => void;
     onNoteChange: (note: string) => void;
+    onApplyEndDateChange: (endDate: string) => void;
     statusOptions: string[];
 }
 
@@ -16,10 +18,12 @@ function ManageItem({
     onRemove,
     onStatusChange,
     onNoteChange,
+    onApplyEndDateChange,
     statusOptions,
 }: ManageItemProps) {
     const [isEditingNote, setIsEditingNote] = useState(false);
     const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+    const [showCalendar, setShowCalendar] = useState(false);
     const [showActions, setShowActions] = useState(false);
     const [editedNote, setEditedNote] = useState(job.note || '');
     const [dropUp, setDropUp] = useState(false);
@@ -118,8 +122,21 @@ function ManageItem({
         // setIsDialogOpen(true);
     };
 
+    const toggleCalendar = () => {
+        setShowCalendar((prev) => !prev);
+    };
+
+    const handleDateSelect = (date: string) => {
+        onApplyEndDateChange(date);
+    };
+
     return (
         <>
+            {showCalendar ? (
+                <CalendarDialog toggle={toggleCalendar} onSelectDate={handleDateSelect} />
+            ) : (
+                <></>
+            )}
             {isMobile ? (
                 <>
                     <div className={style.jobCard} onClick={handleCardClick}>
@@ -131,10 +148,15 @@ function ManageItem({
 
                         <div className={style.jobCard__content}>
                             <h3 className={style.jobCard__title}>{job.jobTitle}</h3>
+                            {job.applyEndDate ? (
+                                job.applyEndDate
+                            ) : (
+                                <button className={style.calendarButton} onClick={toggleCalendar}>
+                                    마감 일자를 추가하세요
+                                </button>
+                            )}
 
                             <div className={style.jobCard__footer}>
-                                <p>{job.applyEndDate}</p>
-                                <p>{formatDate(job.createdAt)}</p>
                                 <div className={style.jobCard__tags}>
                                     <div className={style.jobCard__tags__container}>
                                         <div
@@ -179,6 +201,37 @@ function ManageItem({
                                             )}
                                         </div>
                                     </div>
+                                    {isEditingNote ? (
+                                        <div className={style.item__editField}>
+                                            <textarea
+                                                ref={noteInputRef}
+                                                value={editedNote}
+                                                onChange={(e) => setEditedNote(e.target.value)}
+                                                className={style.item__textarea}
+                                                placeholder="메모를 입력하세요..."
+                                            />
+                                            <div className={style.item__editActions}>
+                                                <button
+                                                    className={style.item__editButton}
+                                                    onClick={handleNoteSave}>
+                                                    <Check size={16} />
+                                                </button>
+                                                <button
+                                                    className={style.item__editButton}
+                                                    onClick={handleNoteCancel}>
+                                                    <X size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            className={`${style.item__note} ${
+                                                !job.note ? style.item__notePlaceholder : ''
+                                            }`}
+                                            onClick={handleNoteEdit}>
+                                            {job.note || '메모 추가...'}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 

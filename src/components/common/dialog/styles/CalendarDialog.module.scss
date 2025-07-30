@@ -1,0 +1,33 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: transparent;
+    width: 100dvw;
+    padding: 1rem;
+
+    &__header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        &__title {
+            color: black;
+        }
+    }
+}

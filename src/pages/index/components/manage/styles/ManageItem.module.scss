@@ -428,6 +428,10 @@
         display: flex;
         justify-content: flex-end;
 
+        @media (max-width: 480px) {
+            gap: 1rem;
+        }
+
         &__container {
             display: flex;
             gap: 0.5rem;
@@ -477,7 +481,6 @@
         align-items: center;
         margin-top: auto;
         padding-top: 1rem;
-        border-top: 1px solid #f0f0f0;
     }
 
     &__location {
@@ -531,6 +534,26 @@
         &.active {
             color: #f4b11f;
         }
+    }
+}
+
+.calendarButton {
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: rgba(229, 57, 53, 0.05);
+    color: #e53935;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: #e6f0ff;
+        transform: translateY(-1px);
     }
 }
 

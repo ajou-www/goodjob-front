@@ -33,14 +33,22 @@ function Manage() {
     };
 
     const handleStatusChange = async (jobId: number, status: string) => {
-        await editApplications(jobId, status, '');
+        await editApplications(jobId, status);
         await getApplications();
     };
 
     const handleNoteChange = async (jobId: number, note: string) => {
         const currentApplication = applications?.find((app) => app.jobId === jobId);
         if (currentApplication) {
-            await editApplications(jobId, currentApplication.applyStatus, note);
+            await editApplications(jobId, note);
+            await getApplications();
+        }
+    };
+
+    const handleApplyEndDateChange = async (jobId: number, endDate: string) => {
+        const currentApplication = applications?.find((app) => app.jobId === jobId);
+        if (currentApplication) {
+            await editApplications(jobId, endDate);
             await getApplications();
         }
     };
@@ -241,6 +249,9 @@ function Manage() {
                                             handleStatusChange(job.jobId, status)
                                         }
                                         onNoteChange={(note) => handleNoteChange(job.jobId, note)}
+                                        onApplyEndDateChange={(endDate) =>
+                                            handleApplyEndDateChange(job.jobId, endDate)
+                                        }
                                         statusOptions={statusOptions}
                                     />
                                 ))

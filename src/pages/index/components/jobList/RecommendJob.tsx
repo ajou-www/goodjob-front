@@ -1,9 +1,11 @@
+import usePageStore from '../../../../store/pageStore';
 import JobDetail from './JobDetail';
 import JobList from './JobList';
 import style from './styles/RecommendJob.module.scss';
 
 function RecommendJob() {
     const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
+    const isCompactMenu = usePageStore((state) => state.isCompactMenu);
 
     return (
         <div className={style.mainContent__jobSection}>
@@ -14,7 +16,10 @@ function RecommendJob() {
             {isMobile ? (
                 <></>
             ) : (
-                <div className={style.mainContent__jobDetail}>
+                <div
+                    className={`${style.mainContent__jobDetail} ${
+                        isCompactMenu ? style.compact : ''
+                    }`}>
                     <JobDetail isDialog={false} />
                 </div>
             )}

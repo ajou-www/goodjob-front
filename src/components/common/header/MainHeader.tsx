@@ -21,10 +21,10 @@ const MainHeader = () => {
     const [history, setHistory] = useState<string[]>([]);
     const searchContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const { setCompactMenu } = usePageStore();
+    const setCompactMenu = usePageStore((state) => state.setCompactMenu);
+    const isCompactMenu = usePageStore((state) => state.isCompactMenu);
     const { setQuery } = useSearchStore();
     // const accessToken = useAuthStore((state) => state.accessToken);
-    const isCompactMenu = usePageStore((state) => state.isCompactMenu);
     const navigate = useNavigate();
 
     // const toggleDarkmode = () => {
@@ -128,11 +128,7 @@ const MainHeader = () => {
     };
 
     const toggleMobileMenu = () => {
-        if (isCompactMenu === true) {
-            setCompactMenu(false);
-        } else {
-            setCompactMenu(true);
-        }
+        setCompactMenu(!isCompactMenu);
     };
 
     useEffect(() => {
