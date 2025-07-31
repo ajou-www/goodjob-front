@@ -10,9 +10,9 @@ interface applyStore {
     getApplications: () => Promise<void>;
     editApplications: (
         jobId: number,
-        status?: string,
-        note?: string,
-        endDate?: string
+        status: string,
+        note: string | null,
+        endDate: string | null
     ) => Promise<number>;
     deleteApplications: (jobId: number) => Promise<number>;
 }
@@ -35,14 +35,14 @@ const useApplyStore = create<applyStore>((set) => ({
         });
         set({ applications: res.data });
     },
-    editApplications: async (jobId, status?, note?, endDate?) => {
+    editApplications: async (jobId, status, note, endDate) => {
         const accessToken = useAuthStore.getState().accessToken;
         const res = await axios.put(
             `${SERVER_IP}/applications?jobId=${jobId}`,
             {
                 applyStatus: status,
                 note: note,
-                applyEndDate: endDate,
+                applyDueDate: endDate,
             },
             { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
         );

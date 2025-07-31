@@ -30,4 +30,28 @@
             color: black;
         }
     }
+
+    &__closeButton {
+        // display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #333;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background-color: #f5f5f5;
+            transform: scale(1.05);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
 }

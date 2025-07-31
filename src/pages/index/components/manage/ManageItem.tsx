@@ -9,7 +9,7 @@ interface ManageItemProps {
     onRemove: () => void;
     onStatusChange: (status: string) => void;
     onNoteChange: (note: string) => void;
-    onApplyEndDateChange: (endDate: string) => void;
+    onApplyDueDateChange: (endDate: string) => void;
     statusOptions: string[];
 }
 
@@ -18,7 +18,7 @@ function ManageItem({
     onRemove,
     onStatusChange,
     onNoteChange,
-    onApplyEndDateChange,
+    onApplyDueDateChange,
     statusOptions,
 }: ManageItemProps) {
     const [isEditingNote, setIsEditingNote] = useState(false);
@@ -127,13 +127,17 @@ function ManageItem({
     };
 
     const handleDateSelect = (date: string) => {
-        onApplyEndDateChange(date);
+        onApplyDueDateChange(date);
     };
 
     return (
         <>
             {showCalendar ? (
-                <CalendarDialog toggle={toggleCalendar} onSelectDate={handleDateSelect} />
+                <CalendarDialog
+                    toggle={toggleCalendar}
+                    onSelectDate={handleDateSelect}
+                    title="이 공고의 마감일을 설정하세요"
+                />
             ) : (
                 <></>
             )}
@@ -148,14 +152,15 @@ function ManageItem({
 
                         <div className={style.jobCard__content}>
                             <h3 className={style.jobCard__title}>{job.jobTitle}</h3>
-                            {job.applyEndDate ? (
-                                job.applyEndDate
+                            {job.applyDueDate ? (
+                                <p className={style.jobCard__dueDate} onClick={toggleCalendar}>
+                                    {job.applyDueDate.replace(/-/g, '.') + ' 마감'}
+                                </p>
                             ) : (
                                 <button className={style.calendarButton} onClick={toggleCalendar}>
-                                    마감 일자를 추가하세요
+                                    이 공고의 마감일을 설정하세요
                                 </button>
                             )}
-
                             <div className={style.jobCard__footer}>
                                 <div className={style.jobCard__tags}>
                                     <div className={style.jobCard__tags__container}>

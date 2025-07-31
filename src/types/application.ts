@@ -3,7 +3,7 @@ interface application {
     jobId: number;
     jobTitle: string;
     companyName: string;
-    applyEndDate: string | null;
+    applyDueDate: string | null;
     applyStatus: string;
     note: string | null;
     createdAt: string;

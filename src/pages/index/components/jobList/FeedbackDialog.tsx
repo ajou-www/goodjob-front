@@ -36,7 +36,9 @@ function Feedback({ isOpen, onClose, feedback }: FeedbackProps) {
             <div className={`${styles.modal} ${isOpen ? '' : styles.hidden}`} ref={feedbackRef}>
                 <div className={styles.modal__header}>
                     <h2 className={styles.modal__header__title}>피드백</h2>
-                    <X className={styles.modal__closeButton} size={30} onClick={onClose} />
+                    <button className={styles.closeButton} onClick={onClose}>
+                        <X size={24} />
+                    </button>
                 </div>
                 <div className={styles.modal__content}>
                     <div

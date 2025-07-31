@@ -32,23 +32,15 @@ function Manage() {
         await getApplications();
     };
 
-    const handleStatusChange = async (jobId: number, status: string) => {
-        await editApplications(jobId, status);
-        await getApplications();
-    };
-
-    const handleNoteChange = async (jobId: number, note: string) => {
+    const handleApplicationEdit = async (
+        jobId: number,
+        status: string,
+        note: string | null,
+        endDate: string | null
+    ) => {
         const currentApplication = applications?.find((app) => app.jobId === jobId);
         if (currentApplication) {
-            await editApplications(jobId, note);
-            await getApplications();
-        }
-    };
-
-    const handleApplyEndDateChange = async (jobId: number, endDate: string) => {
-        const currentApplication = applications?.find((app) => app.jobId === jobId);
-        if (currentApplication) {
-            await editApplications(jobId, endDate);
+            await editApplications(jobId, status, note, endDate);
             await getApplications();
         }
     };
@@ -246,11 +238,28 @@ function Manage() {
                                         job={job}
                                         onRemove={() => handleApplicationRemove(job.jobId)}
                                         onStatusChange={(status) =>
-                                            handleStatusChange(job.jobId, status)
+                                            handleApplicationEdit(
+                                                job.jobId,
+                                                status,
+                                                job.note,
+                                                job.applyDueDate
+                                            )
                                         }
-                                        onNoteChange={(note) => handleNoteChange(job.jobId, note)}
-                                        onApplyEndDateChange={(endDate) =>
-                                            handleApplyEndDateChange(job.jobId, endDate)
+                                        onNoteChange={(note) =>
+                                            handleApplicationEdit(
+                                                job.jobId,
+                                                job.applyStatus,
+                                                note,
+                                                job.applyDueDate
+                                            )
+                                        }
+                                        onApplyDueDateChange={(endDate) =>
+                                            handleApplicationEdit(
+                                                job.jobId,
+                                                job.applyStatus,
+                                                job.note,
+                                                endDate
+                                            )
                                         }
                                         statusOptions={statusOptions}
                                     />
