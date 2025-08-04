@@ -33,6 +33,8 @@ jobs:
 
                     echo "VITE_SERVER_IP=$SERVER_IP" > .env
 
+                    echo "VITE_REDIRECT_IP=$REDIRECT_IP" > .env
+
                     echo "[NPM INSTALL] Installing dependencies..."
                     npm install
 
