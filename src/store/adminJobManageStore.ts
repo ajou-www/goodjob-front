@@ -1,8 +1,7 @@
-import axios from 'axios';
 import { create } from 'zustand';
 import useAuthStore from './authStore';
 import { JobBrief } from '../types/jobBrief';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface CreateJobDto {
     companyName: string;
@@ -54,8 +53,8 @@ const useAdminJobManageStore = create<adminJobManageStore>((set) => ({
     removeJob: async (jobId, vaildType) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.delete(
-                `${SERVER_IP}/admin/dashboard/delete-one-job-valid-type?jobId=${jobId}&validType=${vaildType}`,
+            const res = await axiosInstance.delete(
+                `/admin/dashboard/delete-one-job-valid-type?jobId=${jobId}&validType=${vaildType}`,
                 {
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,
@@ -70,8 +69,8 @@ const useAdminJobManageStore = create<adminJobManageStore>((set) => ({
     getTotalJob: async (page, size, sort) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(
-                `${SERVER_IP}/admin/dashboard/job-valid-type?page=${page}&size=${size}&sort=${sort}`,
+            const res = await axiosInstance.get(
+                `/admin/dashboard/job-valid-type?page=${page}&size=${size}&sort=${sort}`,
                 {
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,
@@ -91,8 +90,8 @@ const useAdminJobManageStore = create<adminJobManageStore>((set) => ({
     jobSearch: async (page, size, query, sort) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(
-                `${SERVER_IP}/admin/dashboard/job-valid-type?keyword=${query}&page=${page}&size=${size}&sort=${sort}`,
+            const res = await axiosInstance.get(
+                `/admin/dashboard/job-valid-type?keyword=${query}&page=${page}&size=${size}&sort=${sort}`,
                 {
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,

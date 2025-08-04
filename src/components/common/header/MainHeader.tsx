@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search, ChevronRight, X, ArrowRightToLine, ArrowLeftToLine } from 'lucide-react';
 import styles from './MainHeader.module.scss';
-// import useAuthStore from '../../../store/authStore';
-import axios from 'axios';
 import { debounce } from 'lodash';
 import usePageStore from '../../../store/pageStore';
 import { useNavigate } from 'react-router-dom';
 import type Job from '../../../types/job';
 import UniversalDialog from '../dialog/UniversalDialog';
 import useSearchStore from '../../../store/searchStore';
-import { SERVER_IP } from '../../../constants/env';
+import axiosInstance from '../../../api/axiosInstance';
 
 const MainHeader = () => {
     const [searchQuery, setSearchQuery] = useState(''); // 검색어
@@ -48,8 +46,8 @@ const MainHeader = () => {
             setIsSearching(true);
 
             try {
-                const response = await axios.get(
-                    `${SERVER_IP}/jobs/search?keyword=${query}&page=0&size=8&sort=createdAt%2CDESC`
+                const response = await axiosInstance.get(
+                    `/jobs/search?keyword=${query}&page=0&size=8&sort=createdAt%2CDESC`
                 );
                 setSearchResults(response.data.content.slice(0, 8));
             } catch (error) {

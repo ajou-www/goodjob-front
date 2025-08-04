@@ -1,11 +1,8 @@
-import axios from 'axios';
 import { create } from 'zustand';
-import { SERVER_IP } from '../../src/constants/env';
 import useAuthStore from './authStore';
+import axiosInstance from '../api/axiosInstance';
 
-// Add export to CvMe
 export interface CvMe {
-    // Added export
     id: number;
     userId: number;
     fileName: string;
@@ -24,7 +21,7 @@ const useCvStore = create<cvStore>((set) => ({
     getUserCvList: async () => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(`${SERVER_IP}/cv/me`, {
+            const res = await axiosInstance.get('/cv/me', {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });

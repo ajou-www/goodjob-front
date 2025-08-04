@@ -1,8 +1,7 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import useAuthStore from './authStore';
 import useUserStore from './userStore';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface fileStore {
     file: File | null;
@@ -25,7 +24,7 @@ const useFileStore = create<fileStore>((set) => ({
     setHasFile: (exists) => set({ hasFile: exists }),
     removeFile: async (cvId) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.delete(`${SERVER_IP}/cv/delete-cv?cvId=${cvId}`, {
+        const res = await axiosInstance.delete(`/cv/delete-cv?cvId=${cvId}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -35,7 +34,7 @@ const useFileStore = create<fileStore>((set) => ({
     },
     removeAllFile: async () => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.delete(`${SERVER_IP}/cv/delete-all-cvs`, {
+        const res = await axiosInstance.delete(`/cv/delete-all-cvs`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -46,7 +45,7 @@ const useFileStore = create<fileStore>((set) => ({
     getSummary: async (selectedCVId) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.post(`${SERVER_IP}/cv/summary-cv?cvId=${selectedCVId}`, null, {
+            const res = await axiosInstance.post(`/cv/summary-cv?cvId=${selectedCVId}`, null, {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });
@@ -63,19 +62,16 @@ const useFileStore = create<fileStore>((set) => ({
             return;
         }
         try {
-            console.time('⏱️ Upload to S3');
-            const res = await axios.put(url, file, {
+            const res = await axiosInstance.put(url, file, {
                 // S3에 파일 업로드
                 headers: { 'Content-Type': file.type },
             });
-            console.timeEnd('⏱️ Upload to S3');
+
             if (res.status === 200) {
                 const accessToken = useAuthStore.getState().accessToken;
 
-                console.time('⏱️ confirm-upload');
-                // confirm 후에 로딩해야함
-                const confirm = await axios.post(
-                    `${SERVER_IP}/s3/confirm-upload?fileName=${fileName}`,
+                const confirm = await axiosInstance.post(
+                    `/s3/confirm-upload?fileName=${fileName}`,
                     null,
                     {
                         headers: {
@@ -84,7 +80,7 @@ const useFileStore = create<fileStore>((set) => ({
                         withCredentials: true,
                     }
                 );
-                console.timeEnd('⏱️ confirm-upload');
+
                 console.log(confirm.status);
                 return confirm.status;
             }
@@ -99,22 +95,18 @@ const useFileStore = create<fileStore>((set) => ({
             return;
         }
         try {
-            console.time('⏱️ Upload to S3');
-            const res = await axios.put(url, file, {
-                // S3에 파일 업로드
+            const res = await axiosInstance.put(url, file, {
                 headers: { 'Content-Type': file.type },
             });
-            console.timeEnd('⏱️ Upload to S3');
+
             if (res.status === 200) {
                 const accessToken = useAuthStore.getState().accessToken;
                 const userEmail = useUserStore.getState().email;
                 const userId = useUserStore.getState().id;
                 const fileName = userEmail.split('@')[0];
 
-                console.time('⏱️ confirm-re-upload');
-                // confirm 후에 로딩해야함
-                const confirm = await axios.post(
-                    `${SERVER_IP}/s3/confirm-re-upload?fileName=${fileName}_${userId}`,
+                const confirm = await axiosInstance.post(
+                    `/s3/confirm-re-upload?fileName=${fileName}_${userId}`,
                     null,
                     {
                         headers: {
@@ -123,7 +115,7 @@ const useFileStore = create<fileStore>((set) => ({
                         withCredentials: true,
                     }
                 );
-                console.timeEnd('⏱️ confirm-re-upload');
+
                 console.log(confirm);
             }
         } catch (error) {

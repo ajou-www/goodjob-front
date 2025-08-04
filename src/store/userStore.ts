@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import axios from 'axios';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface UserStore {
     id: string;
@@ -34,7 +33,7 @@ const useUserStore = create<UserStore>()(
             setGood: () => set((state) => ({ good: state.good + 1 })),
             fetchUserData: async (accessToken) => {
                 try {
-                    const res = await axios.get(`${SERVER_IP}/user/me`, {
+                    const res = await axiosInstance.get('/user/me', {
                         headers: { Authorization: `Bearer ${accessToken}` },
                         withCredentials: true,
                     });

@@ -1,8 +1,7 @@
-import axios from 'axios';
 import application from '../types/application';
 import { create } from 'zustand';
 import useAuthStore from './authStore';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface applyStore {
     applications: application[] | null;
@@ -21,7 +20,7 @@ const useApplyStore = create<applyStore>((set) => ({
     applications: null,
     setApplications: async (jobId) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.post(`${SERVER_IP}/applications/apply?jobId=${jobId}`, null, {
+        const res = await axiosInstance.post(`/applications/apply?jobId=${jobId}`, null, {
             headers: { Authorization: `Bearer ${accessToken}` },
             withCredentials: true,
         });
@@ -29,7 +28,7 @@ const useApplyStore = create<applyStore>((set) => ({
     },
     getApplications: async () => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.get(`${SERVER_IP}/applications`, {
+        const res = await axiosInstance.get('/applications', {
             headers: { Authorization: `Bearer ${accessToken}` },
             withCredentials: true,
         });
@@ -37,8 +36,8 @@ const useApplyStore = create<applyStore>((set) => ({
     },
     editApplications: async (jobId, status, note, endDate) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.put(
-            `${SERVER_IP}/applications?jobId=${jobId}`,
+        const res = await axiosInstance.put(
+            `/applications?jobId=${jobId}`,
             {
                 applyStatus: status,
                 note: note,
@@ -50,7 +49,7 @@ const useApplyStore = create<applyStore>((set) => ({
     },
     deleteApplications: async (jobId) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.delete(`${SERVER_IP}/applications?jobId=${jobId}`, {
+        const res = await axiosInstance.delete(`/applications?jobId=${jobId}`, {
             headers: { Authorization: `Bearer ${accessToken}` },
             withCredentials: true,
         });

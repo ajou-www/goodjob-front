@@ -6,9 +6,8 @@ import {
     billingType,
     verifyResponse,
 } from '../types/billing';
-import axios from 'axios';
-import { SERVER_IP } from '../constants/env';
 import useAuthStore from './authStore';
+import axiosInstance from '../api/axiosInstance';
 
 interface billingStore {
     amount: billingType;
@@ -29,7 +28,7 @@ const useBillingStore = create<billingStore>((set) => ({
     saveAmountInfo: async (json) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.post(`${SERVER_IP}/payments/saveAmount`, json, {
+            const res = await axiosInstance.post('/payments/saveAmount', json, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -45,7 +44,7 @@ const useBillingStore = create<billingStore>((set) => ({
     verifyAmountInfo: async (json) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.post(`${SERVER_IP}/payments/verifyAmount`, json, {
+            const res = await axiosInstance.post('/payments/verifyAmount', json, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -61,7 +60,7 @@ const useBillingStore = create<billingStore>((set) => ({
     confirmPayments: async (json) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.post(`${SERVER_IP}/payments/confirm`, json, {
+            const res = await axiosInstance.post('/payments/confirm', json, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -77,7 +76,7 @@ const useBillingStore = create<billingStore>((set) => ({
     cancelPayments: async (json) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.post(`${SERVER_IP}/payments/cancel`, json, {
+            const res = await axiosInstance.post('/payments/cancel', json, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,

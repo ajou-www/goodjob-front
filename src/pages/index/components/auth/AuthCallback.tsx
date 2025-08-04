@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../../store/authStore';
@@ -6,6 +5,7 @@ import useUserStore from '../../../../store/userStore';
 import LoadingSpinner from '../../../../components/common/loading/LoadingSpinner';
 import { SERVER_IP } from '../../../../constants/env';
 import useJobStore from '../../../../store/jobStore';
+import axiosInstance from '../../../../api/axiosInstance';
 
 function AuthCallback() {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ function AuthCallback() {
     const { getSelectedCvId } = useJobStore();
 
     useEffect(() => {
-        axios
+        axiosInstance
             .get(`${SERVER_IP}/auth/callback-endpoint`, {
                 withCredentials: true,
             })

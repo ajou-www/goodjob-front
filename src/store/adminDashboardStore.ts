@@ -1,8 +1,7 @@
-import axios from 'axios';
 import { create } from 'zustand';
 import useAuthStore from './authStore';
 import { persist } from 'zustand/middleware';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface topKeyword {
     keyword: string;
@@ -41,7 +40,7 @@ const useAdminDashboardStore = create(
             getDashboardInfo: async () => {
                 try {
                     const accessToken = useAuthStore.getState().accessToken;
-                    const res = await axios.get(`${SERVER_IP}/admin/dashboard`, {
+                    const res = await axiosInstance.get('/admin/dashboard', {
                         headers: { Authorization: `Bearer ${accessToken}` },
                         withCredentials: true,
                     });

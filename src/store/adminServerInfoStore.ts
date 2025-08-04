@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import useAuthStore from './authStore';
-import axios from 'axios';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface serverData {
     name: string;
@@ -19,7 +18,7 @@ const useAdminServerInfoStore = create<adminServerInfoStore>((set) => ({
     getServerInfo: async () => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(`${SERVER_IP}/admin/dashboard/server-status`, {
+            const res = await axiosInstance.get('/admin/dashboard/server-status', {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });

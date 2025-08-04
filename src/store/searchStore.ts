@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { JobContent } from '../types/searchResult';
-import axios from 'axios';
 import useAuthStore from './authStore';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface searchStore {
     query: string;
@@ -30,8 +29,8 @@ const useSearchStore = create<searchStore>((set) => ({
     setSearchList: (jobs) => set({ searchList: jobs }),
     getSearchList: async (keyword, page, size) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axios.get(
-            `${SERVER_IP}/jobs/search?keyword=${keyword}&page=${page}&size=${size}&sort=createdAt%2CDESC`,
+        const res = await axiosInstance.get(
+            `/jobs/search?keyword=${keyword}&page=${page}&size=${size}&sort=createdAt%2CDESC`,
             { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
         );
         set({

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { SERVER_IP } from '../../src/constants/env';
 import useAuthStore from './authStore';
+import axiosInstance from '../api/axiosInstance';
 
 interface s3Store {
     url: string;
@@ -15,19 +15,18 @@ const useS3Store = create<s3Store>((set) => ({
     getUploadPresignedURL: async (fileName) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(
-                `${SERVER_IP}/s3/presigned-url/upload?fileName=${fileName}`,
-                { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
-            );
+            const res = await axiosInstance.get(`/s3/presigned-url/upload?fileName=${fileName}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                withCredentials: true,
+            });
             set({ url: res.data });
             return res.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 if (error.response?.status === 409) {
-                    // 409 에러 처리
-                    throw new Error('409 Conflict: 이미 존재하는 별명입니다.');
+                    throw new Error('이미 존재하는 별명입니다.');
                 }
-                throw new Error(`Axios error: ${error.message}`);
+                throw new Error(`error: ${error.message}`);
             } else {
                 throw error;
             }
@@ -36,10 +35,10 @@ const useS3Store = create<s3Store>((set) => ({
     getDownloadPresignedURL: async (fileName) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(
-                `${SERVER_IP}/s3/presigned-url/download?fileName=${fileName}`,
-                { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
-            );
+            const res = await axiosInstance.get(`/s3/presigned-url/download?fileName=${fileName}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                withCredentials: true,
+            });
             const url = res.data;
             set({ url });
             return url;
@@ -51,8 +50,8 @@ const useS3Store = create<s3Store>((set) => ({
     reNameCv: async (oldFileName, newFileName) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.post(
-                `${SERVER_IP}/s3/rename-cv?oldFileName=${oldFileName}&newFileName=${newFileName}`,
+            const res = await axiosInstance.post(
+                `/s3/rename-cv?oldFileName=${oldFileName}&newFileName=${newFileName}`,
                 null,
                 { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
             );

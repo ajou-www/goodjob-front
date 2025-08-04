@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import type feedback from '../types/feedback';
-import axios from 'axios';
 import useAuthStore from './authStore';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface UserFeedback {
     content: string;
@@ -24,7 +23,7 @@ const useUserFeedbackStore = create<useUserFeedbackStore>((set) => ({
     postUserFeedback: async (feedback) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            await axios.post(`${SERVER_IP}/user/feedback`, feedback, {
+            await axiosInstance.post('/user/feedback', feedback, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -40,7 +39,7 @@ const useUserFeedbackStore = create<useUserFeedbackStore>((set) => ({
     getFeedbackList: async () => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(`${SERVER_IP}/admin/feedback`, {
+            const res = await axiosInstance.get('/admin/feedback', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -55,7 +54,7 @@ const useUserFeedbackStore = create<useUserFeedbackStore>((set) => ({
     getAverageFeedbackScore: async () => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(`${SERVER_IP}/admin/feedback/average`, {
+            const res = await axiosInstance.get('/admin/feedback/average', {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });
@@ -69,7 +68,7 @@ const useUserFeedbackStore = create<useUserFeedbackStore>((set) => ({
     removeFeedback: async (id) => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.delete(`${SERVER_IP}/admin/feedback/${id}`, {
+            const res = await axiosInstance.delete(`/admin/feedback/${id}`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });

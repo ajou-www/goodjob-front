@@ -1,7 +1,6 @@
-import axios from 'axios';
 import { create } from 'zustand';
-import { SERVER_IP } from '../constants/env';
 import useAuthStore from './authStore';
+import axiosInstance from '../api/axiosInstance';
 
 interface logStore {
     sendClickEvent: (jobId: number) => void;
@@ -9,8 +8,8 @@ interface logStore {
 
 const useLogStore = create<logStore>(() => ({
     sendClickEvent: (jobId) => {
-        axios
-            .post(`${SERVER_IP}/log/event?jobId=${jobId}&event=click`, null, {
+        axiosInstance
+            .post(`/log/event?jobId=${jobId}&event=click`, null, {
                 headers: {
                     Authorization: `Bearer ${useAuthStore.getState().accessToken}`,
                     'Content-Type': 'application/json',

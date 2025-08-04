@@ -5,9 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import useSearchStore from '../../../store/searchStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
-import axios from 'axios';
-import { SERVER_IP } from '../../../constants/env';
 import UniversalDialog from '../dialog/UniversalDialog';
+import axiosInstance from '../../../api/axiosInstance';
 
 interface SearchBarProps {
     onClose: () => void;
@@ -43,8 +42,8 @@ function SearchBar({ onClose }: SearchBarProps) {
             setIsSearching(true);
 
             try {
-                const response = await axios.get(
-                    `${SERVER_IP}/jobs/search?keyword=${query}&page=0&size=8&sort=createdAt%2CDESC`
+                const response = await axiosInstance.get(
+                    `/jobs/search?keyword=${query}&page=0&size=8&sort=createdAt%2CDESC`
                 );
                 setSearchResults(response.data.content.slice(0, 8));
             } catch (error) {

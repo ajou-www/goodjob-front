@@ -1,11 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import axios from 'axios';
 import useAuthStore from './authStore';
 import useBookmarkStore from './bookmarkStore';
 import Job from '../types/job';
-import { SERVER_IP } from '../../src/constants/env';
 import { JobContent } from '../types/searchResult';
+import axiosInstance from '../api/axiosInstance';
 
 interface CvMe {
     id: number;
@@ -63,8 +62,8 @@ const useJobStore = create<JobStore>()(
             getFeedback: async (jobId, cvId) => {
                 try {
                     const accessToken = useAuthStore.getState().accessToken;
-                    const res = await axios.post(
-                        `${SERVER_IP}/rec/feedback?jobId=${jobId}&cvId=${cvId}`,
+                    const res = await axiosInstance.post(
+                        `/rec/feedback?jobId=${jobId}&cvId=${cvId}`,
                         null,
                         {
                             headers: {
@@ -87,8 +86,8 @@ const useJobStore = create<JobStore>()(
                 try {
                     const accessToken = useAuthStore.getState().accessToken;
 
-                    const res = await axios.post(
-                        `${SERVER_IP}/rec/topk-list?topk=${count}&cvId=${cvId}`,
+                    const res = await axiosInstance.post(
+                        `/rec/topk-list?topk=${count}&cvId=${cvId}`,
                         null,
                         {
                             headers: {
@@ -109,8 +108,8 @@ const useJobStore = create<JobStore>()(
                 try {
                     const accessToken = useAuthStore.getState().accessToken;
 
-                    const res = await axios.post(
-                        `${SERVER_IP}/rec/similar-jobs?jobId=${cvId}&topk=${count}`,
+                    const res = await axiosInstance.post(
+                        `/rec/similar-jobs?jobId=${cvId}&topk=${count}`,
                         null,
                         {
                             headers: {
@@ -154,7 +153,7 @@ const useJobStore = create<JobStore>()(
             getSelectedCvId: async () => {
                 try {
                     const accessToken = useAuthStore.getState().accessToken;
-                    const res = await axios.get(`${SERVER_IP}/cv/me`, {
+                    const res = await axiosInstance.get('/cv/me', {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
                         },

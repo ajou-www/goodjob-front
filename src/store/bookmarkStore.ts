@@ -1,9 +1,8 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import useAuthStore from './authStore';
 import type Job from '../types/job';
 import useJobStore from './jobStore';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface bookmarkStore {
     bookmarkList: Job[] | null;
@@ -32,7 +31,7 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
             }
 
             // API 호출
-            const res = await axios.post(`${SERVER_IP}/bookmark/add?JobId=${id}`, null, {
+            const res = await axiosInstance.post(`/bookmark/add?JobId=${id}`, null, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -57,7 +56,7 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
     getBookmark: async () => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(`${SERVER_IP}/bookmark/me`, {
+            const res = await axiosInstance.get('/bookmark/me', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -84,7 +83,7 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
             });
 
             // API 호출
-            const res = await axios.delete(`${SERVER_IP}/bookmark/remove?JobId=${id}`, {
+            const res = await axiosInstance.delete(`/bookmark/remove?JobId=${id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

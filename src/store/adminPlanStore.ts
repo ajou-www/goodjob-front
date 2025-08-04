@@ -1,12 +1,11 @@
 import { create } from 'zustand';
 import useAuthStore from './authStore';
-import axios from 'axios';
-import { SERVER_IP } from '../../src/constants/env';
+import axiosInstance from '../api/axiosInstance';
 
 interface PlanData {
-    starter: number;      
-    basic: number;        
-    enterprise: number;   
+    starter: number;
+    basic: number;
+    enterprise: number;
 }
 
 interface AdminPlanStore {
@@ -16,14 +15,14 @@ interface AdminPlanStore {
 
 const useAdminPlanStore = create<AdminPlanStore>((set) => ({
     plan: {
-        starter: 0.00,
-        basic: 0.00,
-        enterprise: 0.00,
+        starter: 0.0,
+        basic: 0.0,
+        enterprise: 0.0,
     },
     getPlan: async () => {
         try {
             const accessToken = useAuthStore.getState().accessToken;
-            const res = await axios.get(`${SERVER_IP}/admin/dashboard/plan`, {
+            const res = await axiosInstance.get('/admin/dashboard/plan', {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });
