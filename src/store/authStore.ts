@@ -1,7 +1,6 @@
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { SERVER_IP } from '../../src/constants/env';
 
 interface AuthStore {
     accessToken: string | null;
@@ -20,12 +19,13 @@ const useAuthStore = create<AuthStore>()(
             accessToken: null,
             isLoggedIn: false,
             setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
-            setTokens: (accessToken) => set({ accessToken, isLoggedIn: !!accessToken }), // !! 사용으로 불리언 값으로 변경
+            setTokens: (accessToken) => set({ accessToken, isLoggedIn: !!accessToken }),
             clearTokens: () => set({ accessToken: null, isLoggedIn: false }),
-            // 수정 필요
-            fetchAuthData: async () => {},
+            fetchAuthData: async () => {
+                // 필요시 axiosInstance로 구현
+            },
             setLogout: async (accessToken) => {
-                const res = await axios.post(`${SERVER_IP}/auth/logout`, null, {
+                const res = await axiosInstance.post('/auth/logout', null, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,
                 });
@@ -39,7 +39,7 @@ const useAuthStore = create<AuthStore>()(
             },
             withdraw: async (accessToken) => {
                 try {
-                    const res = await axios.delete(`${SERVER_IP}/auth/withdraw`, {
+                    const res = await axiosInstance.delete('/auth/withdraw', {
                         headers: { Authorization: `Bearer ${accessToken}` },
                         withCredentials: true,
                     });
