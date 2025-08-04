@@ -22,6 +22,7 @@ jobs:
                   HUNIAN_HOST: ${{ secrets.HUNIAN_HOST }}
                   HUNIAN_PASSWORD: ${{ secrets.HUNIAN_PASSWORD }}
                   SERVER_IP: ${{ secrets.SERVER_IP }}
+                  REDIRECT_IP: ${{ secrets.REDIRECT_IP}}
               run: |
                   sshpass -p "$HUNIAN_PASSWORD" ssh -o StrictHostKeyChecking=no $HUNIAN_USER@$HUNIAN_HOST << EOF
 
