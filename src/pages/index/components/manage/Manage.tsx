@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import ManageItem from './ManageItem';
 import style from './styles/Manage.module.scss';
 import useApplyStore from '../../../../store/applyStore';
-import { Filter, Search } from 'lucide-react';
+import { CalendarDays, Filter, Search } from 'lucide-react';
 import type application from '../../../../types/application';
+import CalendarView from '../../../../components/common/calendar/CalendarView';
 
 type SortField = 'companyName' | 'jobTitle' | 'createdAt' | 'applyStatus';
 type SortOrder = 'asc' | 'desc';
@@ -16,6 +17,7 @@ function Manage() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [showFilters, setShowFilters] = useState(false);
+    const [toggleView, setToggleView] = useState(false);
     const [filteredApplications, setFilteredApplications] = useState<application[] | null>(null);
     const [sortConfig, setSortConfig] = useState<{ field: SortField; order: SortOrder }>({
         field: 'createdAt',
@@ -147,9 +149,26 @@ function Manage() {
                         className={`${style.header__filterButton} ${
                             showFilters ? style.active : ''
                         }`}
-                        onClick={() => setShowFilters(!showFilters)}>
+                        onClick={() => {
+                            if (toggleView) return; // 캘린더 뷰라면 필터 열지 않음
+                            setShowFilters(!showFilters);
+                        }}>
                         <Filter size={16} />
                         <span>필터</span>
+                    </button>
+
+                    <button
+                        className={`${style.header__filterButton} ${
+                            toggleView ? style.active : ''
+                        }`}
+                        onClick={() => {
+                            setToggleView(!toggleView);
+                            if (showFilters) {
+                                setShowFilters(!showFilters); // 필터 열려있을 때 캘린더 뷰로 변경하면 필터 닫기
+                            }
+                        }}>
+                        <CalendarDays size={16} />
+                        <span>캘린더 뷰</span>
                     </button>
                 </div>
             </div>
@@ -201,7 +220,32 @@ function Manage() {
                 </div>
             )}
 
-            {isLoading ? (
+            {toggleView ? (
+                <CalendarView
+                    events={
+                        filteredApplications
+                            ? filteredApplications
+                                  .filter(({ applyDueDate }) => !!applyDueDate)
+                                  .map(
+                                      ({
+                                          jobId,
+                                          jobTitle,
+                                          companyName,
+                                          applyDueDate,
+                                          applyStatus,
+                                      }) => ({
+                                          id: jobId,
+                                          title: jobTitle,
+                                          companyName: companyName,
+                                          applyStatus: applyStatus,
+                                          start: applyDueDate ? new Date(applyDueDate) : undefined,
+                                          end: applyDueDate ? new Date(applyDueDate) : undefined,
+                                      })
+                                  )
+                            : []
+                    }
+                />
+            ) : isLoading ? (
                 <div className={style.loading}>
                     <div className={style.loading__spinner}></div>
                     <p>데이터를 불러오는 중...</p>
