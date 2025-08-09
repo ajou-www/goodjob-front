@@ -6,7 +6,7 @@ import { CalendarDays, Filter, Search } from 'lucide-react';
 import type application from '../../../../types/application';
 import CalendarView from '../../../../components/common/calendar/CalendarView';
 
-type SortField = 'companyName' | 'jobTitle' | 'createdAt' | 'applyStatus';
+type SortField = 'companyName' | 'jobTitle' | 'applyDueDate' | 'applyStatus';
 type SortOrder = 'asc' | 'desc';
 
 function Manage() {
@@ -20,7 +20,7 @@ function Manage() {
     const [toggleView, setToggleView] = useState(false);
     const [filteredApplications, setFilteredApplications] = useState<application[] | null>(null);
     const [sortConfig, setSortConfig] = useState<{ field: SortField; order: SortOrder }>({
-        field: 'createdAt',
+        field: 'applyDueDate',
         order: 'desc',
     });
     const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -93,8 +93,10 @@ function Manage() {
                 case 'jobTitle':
                     comparison = a.jobTitle.localeCompare(b.jobTitle);
                     break;
-                case 'createdAt':
-                    comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                case 'applyDueDate':
+                    comparison =
+                        new Date(a.applyDueDate ?? 0).getTime() -
+                        new Date(b.applyDueDate ?? 0).getTime();
                     break;
                 case 'applyStatus':
                     comparison = a.applyStatus.localeCompare(b.applyStatus);
@@ -196,10 +198,10 @@ function Manage() {
                         <div className={style.filters__sortOptions}>
                             <button
                                 className={`${style.filters__sortOption} ${
-                                    sortConfig.field === 'createdAt' ? style.active : ''
+                                    sortConfig.field === 'applyDueDate' ? style.active : ''
                                 }`}
-                                onClick={() => handleSort('createdAt')}>
-                                날짜 {getSortIcon('createdAt')}
+                                onClick={() => handleSort('applyDueDate')}>
+                                날짜 {getSortIcon('applyDueDate')}
                             </button>
                             <button
                                 className={`${style.filters__sortOption} ${
@@ -266,8 +268,8 @@ function Manage() {
                             </div>
                             <div
                                 className={style.listView__cell}
-                                onClick={() => handleSort('createdAt')}>
-                                관리 시작 일자 {getSortIcon('createdAt')}
+                                onClick={() => handleSort('applyDueDate')}>
+                                공고 마감 일자 {getSortIcon('applyDueDate')}
                             </div>
                             <div className={style.listView__cell}>메모</div>
                             <div className={style.listView__cell}>상태</div>

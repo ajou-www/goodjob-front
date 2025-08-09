@@ -1,0 +1,85 @@
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+/* Calendar.module.scss */
+:global {
+    .rbc-event {
+        background-color: #1877f2;
+        font-size: 0.75rem;
+    }
+
+    .rbc-month-view {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+
+    .rbc-toolbar button {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+}
+
+.status {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 16px;
+    border: none;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        filter: brightness(1.1);
+    }
+}
+
+.statusDropdown {
+    position: absolute;
+    left: 0;
+    width: 150px;
+    height: 180px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    overflow: scroll;
+    animation: fadeIn 0.2s ease;
+
+    // 아래로 오버플로우될 때 위로 띄우는 스타일
+    &.dropUp {
+        top: auto;
+        bottom: calc(100% + 5px);
+    }
+    // 기본(아래로)
+    &:not(.dropUp) {
+        top: calc(100% + 5px);
+        bottom: auto;
+    }
+}
+
+.statusOption {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 100;
+
+    &:hover {
+        background-color: #f5f9fd;
+    }
+}
+
+.statusDot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}

@@ -262,7 +262,9 @@ function ManageItem({
                     </div>
 
                     <div className={style.item__cell}>
-                        <div className={style.item__date}>{formatDate(job.createdAt)}</div>
+                        <div className={style.item__date} onClick={toggleCalendar}>
+                            {formatDate(job.applyDueDate ?? '')}
+                        </div>
                     </div>
 
                     <div className={style.item__cell}>
