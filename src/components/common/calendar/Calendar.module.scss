@@ -40,23 +40,42 @@
 .statusDropdown {
     position: absolute;
     left: 0;
-    width: 150px;
-    height: 180px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 170px;
+    max-height: 220px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     z-index: 9999;
-    overflow: scroll;
-    animation: fadeIn 0.2s ease;
+    overflow-y: auto;
+    animation: fadeIn 0.15s ease-out;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 
-    // 아래로 오버플로우될 때 위로 띄우는 스타일
+    &[data-align='right'] {
+        left: auto;
+        right: 0;
+    }
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.25);
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
     &.dropUp {
         top: auto;
-        bottom: calc(100% + 5px);
+        bottom: calc(100% + 6px);
     }
-    // 기본(아래로)
+
     &:not(.dropUp) {
-        top: calc(100% + 5px);
+        top: calc(100% + 6px);
         bottom: auto;
     }
 }
@@ -65,21 +84,34 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
-    color: #333;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.65rem;
+    color: #444;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    z-index: 100;
+    transition: background-color 0.15s ease, color 0.15s ease;
 
     &:hover {
-        background-color: #f5f9fd;
+        background-color: #f0f6ff;
+        color: #1a73e8;
+    }
+
+    .statusDot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: currentColor;
+        flex-shrink: 0;
     }
 }
 
-.statusDot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+// 부드러운 페이드 인 애니메이션
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -100,8 +100,8 @@ function CalendarView({ events }: CalendarViewProps) {
 
             {showDropdown && dropdownPosition && (
                 <div
-                    ref={dropdownRef} // 외부 클릭 감지를 위해 ref 연결
-                    className={style.dropdown}
+                    ref={dropdownRef}
+                    className={style.statusDropdown}
                     style={{
                         position: 'absolute',
                         top: `${dropdownPosition.y}px`,

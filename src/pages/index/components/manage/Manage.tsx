@@ -25,6 +25,7 @@ function Manage() {
     });
     const [statusFilter, setStatusFilter] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
     // 상태 옵션 목록
     const statusOptions = ['준비중', '지원', '서류전형', '코테', '면접', '최종합격', '불합격'];
@@ -159,19 +160,23 @@ function Manage() {
                         <span>필터</span>
                     </button>
 
-                    <button
-                        className={`${style.header__filterButton} ${
-                            toggleView ? style.active : ''
-                        }`}
-                        onClick={() => {
-                            setToggleView(!toggleView);
-                            if (showFilters) {
-                                setShowFilters(!showFilters); // 필터 열려있을 때 캘린더 뷰로 변경하면 필터 닫기
-                            }
-                        }}>
-                        <CalendarDays size={16} />
-                        <span>캘린더 뷰</span>
-                    </button>
+                    {isMobile ? (
+                        <></>
+                    ) : (
+                        <button
+                            className={`${style.header__filterButton} ${
+                                toggleView ? style.active : ''
+                            }`}
+                            onClick={() => {
+                                setToggleView(!toggleView);
+                                if (showFilters) {
+                                    setShowFilters(!showFilters); // 필터 열려있을 때 캘린더 뷰로 변경하면 필터 닫기
+                                }
+                            }}>
+                            <CalendarDays size={16} />
+                            <span>캘린더 뷰</span>
+                        </button>
+                    )}
                 </div>
             </div>
 
