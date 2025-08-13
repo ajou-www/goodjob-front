@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search, ChevronRight, X, ArrowRightToLine, ArrowLeftToLine } from 'lucide-react';
+import { Search, ChevronRight, X, ArrowRightToLine, ArrowLeftToLine, Bell } from 'lucide-react';
 import styles from './MainHeader.module.scss';
 import { debounce } from 'lodash';
 import usePageStore from '../../../store/pageStore';
@@ -8,6 +8,7 @@ import type Job from '../../../types/job';
 import UniversalDialog from '../dialog/UniversalDialog';
 import useSearchStore from '../../../store/searchStore';
 import axiosInstance from '../../../api/axiosInstance';
+import AlertDialog from '../dialog/NotificationDialog';
 
 const MainHeader = () => {
     const [searchQuery, setSearchQuery] = useState(''); // 검색어
@@ -15,19 +16,16 @@ const MainHeader = () => {
     const [isSearching, setIsSearching] = useState(false); // 검색 중
     const [isFocusing, setIsFocusing] = useState(false);
     const [showSingleSearchResult, setShowSingleSearchResult] = useState(false);
+    const [showAlertDropdown, setShowAlertDropdown] = useState(false);
     const [selectedResult, setSelectedResult] = useState<Job>();
     const [history, setHistory] = useState<string[]>([]);
+    const alertDropdownRef = useRef<HTMLDivElement>(null);
     const searchContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const setCompactMenu = usePageStore((state) => state.setCompactMenu);
     const isCompactMenu = usePageStore((state) => state.isCompactMenu);
     const { setQuery } = useSearchStore();
-    // const accessToken = useAuthStore((state) => state.accessToken);
     const navigate = useNavigate();
-
-    // const toggleDarkmode = () => {
-    //     alert('다크 모드 구현 예정');
-    // };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
@@ -129,6 +127,10 @@ const MainHeader = () => {
         setCompactMenu(!isCompactMenu);
     };
 
+    const toggleAlertDropdown = () => {
+        setShowAlertDropdown(!showAlertDropdown);
+    };
+
     useEffect(() => {
         const handleStorageChange = () => {
             getSearchHistory();
@@ -139,6 +141,23 @@ const MainHeader = () => {
             window.removeEventListener('search-history-changed', handleStorageChange);
         };
     }, []);
+
+    useEffect(() => {
+        if (!showAlertDropdown) return;
+
+        const handleClickOutside = (e: MouseEvent) => {
+            // 드롭다운 자기 자신이나 그 자식 요소를 클릭한게 아니라면 닫습니다.
+            if (alertDropdownRef.current && !alertDropdownRef.current.contains(e.target as Node)) {
+                setShowAlertDropdown(false);
+            }
+        };
+
+        // setTimeout을 사용해 mousedown 이벤트와의 충돌을 피합니다.
+        setTimeout(() => document.addEventListener('click', handleClickOutside), 0);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [showAlertDropdown]);
 
     return (
         <>
@@ -269,31 +288,31 @@ const MainHeader = () => {
                         )}
                     </div>
                 </div>
-                {/* <div className={styles.header__actions}>
-                    {accessToken ? (
-                        <>
-                            <button
+                <div className={styles.header__actions}>
+                    <>
+                        {/* <button
                                 className={styles.header__actionButton}
                                 aria-label="다크모드"
                                 onClick={toggleDarkmode}>
                                 <Moon size={24} color="#666666" />
-                            </button>
-                            <button
-                                className={styles.header__actionButton}
-                                aria-label="알림"
-                                onClick={() => {
-                                    alert('알림 기능 구현 예정');
-                                }}>
+                            </button> */}
+                        <button
+                            className={styles.header__actionButton}
+                            aria-label="알림"
+                            onClick={toggleAlertDropdown}>
+                            <li data-badge="" style={{ display: 'inline-block' }}>
                                 <Bell size={24} color="#666666" />
-                            </button>
-                        </>
-                    ) : (
-                        <div className={styles.header__authButtons}>
-                            <button className={styles.header__signUpButton}>회원가입</button>
-                            <button className={styles.header__signInButton}>로그인</button>
-                        </div>
-                    )}
-                </div> */}
+                            </li>
+                        </button>
+                        {showAlertDropdown ? (
+                            <div className={styles.alertDropdownWrapper} ref={alertDropdownRef}>
+                                <AlertDialog />
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                    </>
+                </div>
             </header>
         </>
     );
