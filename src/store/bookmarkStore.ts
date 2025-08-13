@@ -62,7 +62,6 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
                 },
                 withCredentials: true,
             });
-            console.log(`Get bookmark: ${res.data}`);
             set({ bookmarkList: res.data }); // 응답 데이터로 상태 업데이트
             return res.data;
         } catch (error) {

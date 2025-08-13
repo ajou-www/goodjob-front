@@ -11,11 +11,11 @@ import LoadingSpinner from '../../../../components/common/loading/LoadingSpinner
 import { parseMarkdown } from '../../../../utils/markdown';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useCvStore from '../../../../store/cvStore';
-import useJobStore from '../../../../store/jobStore';
 import usePageStore from '../../../../store/pageStore';
 import CVDeleteDialog from '../../../../components/common/dialog/CVDeleteDialog';
 import useActionStore from '../../../../store/actionStore';
 import CVSummaryDialog from '../../../../components/common/dialog/CVSummaryDialog';
+import useRecommendationStore from '../../../../store/recommendationCacheStore';
 
 function MyCv() {
     const { getSummary } = useFileStore();
@@ -30,8 +30,8 @@ function MyCv() {
     const hasFile = useFileStore((state) => state.hasFile);
     const summaryText = useFileStore((state) => state.summary);
     const userCvList = useCvStore((state) => state.userCvList);
-    const selectedCVId = useJobStore((state) => state.selectedCVId);
-    const { getSelectedCvId } = useJobStore();
+    const selectedCVId = useRecommendationStore((state) => state.selectedCVId);
+    const getSelectedCVId = useRecommendationStore((state) => state.getSelectedCVId);
     const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
     const navigate = useNavigate();
@@ -57,6 +57,8 @@ function MyCv() {
                 setIsSummaryLoading(true);
                 if (selectedCVId !== null) {
                     await getSummary(selectedCVId);
+                } else {
+                    getSelectedCVId();
                 }
             } catch (error) {
                 console.error('데이터 가져오기 에러:', error);
@@ -66,11 +68,11 @@ function MyCv() {
             }
         };
         fetchCVSummary();
-    }, [hasFile, userCvList, selectedCVId, action]);
+    }, [hasFile, userCvList, selectedCVId, action, getSummary]);
 
     useEffect(() => {
         if (hasError) {
-            getSelectedCvId();
+            getSelectedCVId();
         }
     }, [hasError]);
 

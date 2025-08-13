@@ -4,7 +4,7 @@ import style from './styles/CVViewer.module.scss';
 import useCvStore, { type CvMe } from '../../../../store/cvStore';
 import { Eye, FileText, Loader2, Trash2, Edit3, Check, X } from 'lucide-react';
 import CVDeleteDialog from '../../../../components/common/dialog/CVDeleteDialog';
-import useJobStore from '../../../../store/jobStore';
+import useRecommendationStore from '../../../../store/recommendationCacheStore';
 
 interface CvItemProps {
     cv: CvMe;
@@ -15,8 +15,8 @@ interface CvItemProps {
 }
 
 function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemProps) {
-    const { setSelectedCvId } = useJobStore();
-    const selctedCvId = useJobStore((state) => state.selectedCVId);
+    const setSelectedCVId = useRecommendationStore((state) => state.setSelectedCVId);
+    const selctedCvId = useRecommendationStore((state) => state.selectedCVId);
     const [deleteDialogHidden, setDeleteDialogHidden] = useState(false);
     const [isRenaming, setIsRenaming] = useState(false);
     const [newFileName, setNewFileName] = useState('');
@@ -38,7 +38,8 @@ function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemPr
 
     const handleSelectCv = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setSelectedCvId(cv.id);
+
+        setSelectedCVId(cv.id);
     };
 
     useEffect(() => {}, [selctedCvId]);

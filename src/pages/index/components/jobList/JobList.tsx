@@ -4,7 +4,7 @@ import styles from './styles/JobList.module.scss';
 import type Job from '../../../../types/job';
 import useJobStore from '../../../../store/jobStore';
 import useBookmarkStore from '../../../../store/bookmarkStore';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../../../../components/common/error/ErrorFallback';
 import LoadingAnime1 from '../../../../components/common/loading/LoadingAnime1';
@@ -13,6 +13,7 @@ import useUserStore from '../../../../store/userStore';
 import UserFeedbackDialog from '../../../../components/common/dialog/UserFeedbackDialog';
 import useLogStore from '../../../../store/logStore';
 import JobDetailDialog from '../bookmark/JobDetailDialog';
+import useRecommendationStore from '../../../../store/recommendationCacheStore';
 
 function JobList() {
     const [activeFilter, setActiveFilter] = useState('');
@@ -21,7 +22,10 @@ function JobList() {
     const [hasError, setHasError] = useState(false);
     const [isJobDetailDialogOpen, setIsJobDetailDialogOpen] = useState(false);
 
-    const selectedCVId = useJobStore((state) => state.selectedCVId);
+    const selectedCVId = useRecommendationStore((state) => state.selectedCVId);
+    const setRecommendationsCache = useRecommendationStore((state) => state.setRecommendations);
+    const recommendationsCache = useRecommendationStore((state) => state.recommendationsCache);
+    const selectedJobDetail = useJobStore((state) => state.selectedJobDetail); // 추가
     const { setIsJobListLoad } = useActionStore();
     const { setGood } = useUserStore();
     const visited = useUserStore((state) => state.good);
@@ -34,7 +38,8 @@ function JobList() {
     const experienceButtonRef = useRef<HTMLDivElement>(null);
     const typeButtonRef = useRef<HTMLDivElement>(null);
 
-    const { setSelectedJobDetail, jobList, getJobList, getSelectedCvId } = useJobStore(); // 추가
+    const { setSelectedJobDetail, jobList, getJobList, setJobList } = useJobStore(); // 추가
+    const getSelectedCVId = useRecommendationStore((state) => state.getSelectedCVId);
     const { addBookmark, removeBookmark, getBookmark } = useBookmarkStore();
     const bookmarkedList = useBookmarkStore((state) => state.bookmarkList);
     const { sendClickEvent } = useLogStore();
@@ -51,28 +56,71 @@ function JobList() {
     const TOTAL_JOB = 80;
     const isMobile = window.matchMedia('only screen and (max-width: 480px)').matches;
 
-    // 파일 업로드에서 다른 pending 페이지를 만들어 1분 가량을 벌어야함
-    // 현재 파일 업로드에서 10초의 시간을 확보
-    // 최대 1분 20초 소요
-    // setTimeout 70000
-    // 최초 업로드 및 재업로드에 70000~80000ms
-    // 최초 업로드시에는 업로드 페이지에서 10000ms 확보
-    // useEffect(() => {
-    //     const checkPending = () => {
-    //         setTimeout(() => {
-    //             console.log('pending end');
-    //             setIsPending(false);
-    //         }, 80000);
-    //     };
-    //     setIsPending(true);
-    //     checkPending();
-    // }, [hasError]);
-
     useEffect(() => {
         if (hasError) {
-            getSelectedCvId();
+            getSelectedCVId();
         }
     }, [hasError]);
+
+    useEffect(() => {
+        if (selectedCVId !== null) {
+            fetchData();
+        }
+    }, [selectedCVId]);
+
+    const handleExperienceClick = useCallback((item: string) => {
+        setExperienceFilterVector((prev) =>
+            prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+        );
+    }, []);
+
+    const handleTypeClick = useCallback((item: string) => {
+        setTypeFilterVector((prev) =>
+            prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+        );
+    }, []);
+
+    const JobExperienceFilter = useMemo(() => {
+        return (
+            <div
+                className={`${styles.jobList__filters__extend} ${
+                    activeFilter === '경력' ? styles.active : ''
+                } ${activeFilter === '경력' ? '' : styles.hidden}`}
+                ref={experienceFilterRef}>
+                {filterData.jobExperience.map((item) => (
+                    <div
+                        key={item}
+                        className={`${styles.jobList__filterButton} ${
+                            experienceFilterVector.includes(item) ? styles.active : ''
+                        }`}
+                        onClick={() => handleExperienceClick(item)}>
+                        {item}
+                    </div>
+                ))}
+            </div>
+        );
+    }, [activeFilter, experienceFilterVector, handleExperienceClick]);
+
+    const JobTypeFilter = useMemo(() => {
+        return (
+            <div
+                className={`${styles.jobList__filters__extend} ${
+                    activeFilter === '근무 유형' ? styles.active : ''
+                } ${activeFilter === '근무 유형' ? '' : styles.hidden}`}
+                ref={typeFilterRef}>
+                {filterData.jobType.map((item) => (
+                    <div
+                        key={item}
+                        className={`${styles.jobList__filterButton} ${
+                            typeFilterVector.includes(item) ? styles.active : ''
+                        }`}
+                        onClick={() => handleTypeClick(item)}>
+                        {item}
+                    </div>
+                ))}
+            </div>
+        );
+    }, [activeFilter, typeFilterVector, handleTypeClick]);
 
     const filterJobs = useCallback(() => {
         const filtered = (jobList || []).filter((job) => {
@@ -86,10 +134,78 @@ function JobList() {
 
         setFilteredJobs(filtered);
 
-        if (filtered.length > 0) {
-            setSelectedJobDetail(filtered[0]); // filtered[0].id
+        // selectedJobDetail과 비교하여 변경 시에만 setSelectedJobDetail 호출
+        if (filtered.length > 0 && filtered[0].id !== (selectedJobDetail?.id ?? null)) {
+            setSelectedJobDetail(filtered[0]);
         }
-    }, [experienceFilterVector, typeFilterVector, jobList]);
+    }, [
+        experienceFilterVector,
+        typeFilterVector,
+        jobList,
+        setSelectedJobDetail,
+        selectedJobDetail,
+    ]);
+    // filteredJobs 제거
+
+    const pollingActiveRef = useRef(true); // pollingActive를 useRef로 선언
+
+    const fetchData = async () => {
+        setIsJobListLoad(false);
+
+        try {
+            if (selectedCVId !== null) {
+                if (recommendationsCache[selectedCVId]) {
+                    setJobList(recommendationsCache[selectedCVId]);
+                    console.log('API 호출 최적화!!');
+                } else {
+                    setIsLoading(true);
+                    const jobList = await getJobList(TOTAL_JOB, selectedCVId);
+                    setRecommendationsCache(selectedCVId, jobList);
+                }
+            } else {
+                setIsLoading(true);
+                getSelectedCVId();
+            }
+            await getBookmark();
+            // setIsLoading(false);
+            setIsJobListLoad(true);
+            pollingActiveRef.current = false;
+            setHasError(false);
+        } catch (error) {
+            console.error('데이터 가져오기 에러:', error);
+            setHasError(true);
+            setIsJobListLoad(true);
+        }
+    };
+
+    useEffect(() => {
+        let pollingInterval: NodeJS.Timeout;
+        let timeoutHandle: NodeJS.Timeout;
+        pollingActiveRef.current = true; // polling 시작 시 true로 초기화
+
+        const startPolling = async () => {
+            await fetchData();
+            pollingInterval = setInterval(() => {
+                if (pollingActiveRef.current) {
+                    fetchData();
+                }
+            }, 10000);
+        };
+
+        startPolling();
+
+        // eslint-disable-next-line prefer-const
+        timeoutHandle = setTimeout(() => {
+            pollingActiveRef.current = false;
+            clearInterval(pollingInterval);
+        }, 80000);
+
+        return () => {
+            clearInterval(pollingInterval);
+            clearTimeout(timeoutHandle);
+            pollingActiveRef.current = false;
+        };
+    }, [selectedCVId]);
 
     useEffect(() => {
         filterJobs();
@@ -146,63 +262,17 @@ function JobList() {
         }
     };
 
-    useEffect(() => {
-        let pollingInterval: NodeJS.Timeout;
-        let timeoutHandle: NodeJS.Timeout;
-        let pollingActive = true;
-
-        const fetchData = async () => {
-            setIsLoading(true);
-            setIsJobListLoad(false);
-            try {
-                {
-                    if (selectedCVId !== null) {
-                        await getJobList(TOTAL_JOB, selectedCVId);
-                    }
-                    await getBookmark();
-                    // setSelectedJobDetail(jobList[0]);
-                    setIsLoading(false);
-                    setIsJobListLoad(true);
-                    pollingActive = false;
-                }
-                setHasError(false);
-            } catch (error) {
-                console.error('데이터 가져오기 에러:', error);
-                setHasError(true);
-                setIsJobListLoad(true);
-            }
-        };
-
-        const startPolling = async () => {
-            await fetchData();
-            pollingInterval = setInterval(() => {
-                if (pollingActive) {
-                    fetchData();
-                }
-            }, 10000);
-        };
-
-        startPolling();
-
-        // eslint-disable-next-line prefer-const
-        timeoutHandle = setTimeout(() => {
-            pollingActive = false;
-            clearInterval(pollingInterval);
-            console.log('⏱️ 80초 polling 중단');
-        }, 80000); // 80초 뒤 polling 종료
-
-        return () => {
-            clearInterval(pollingInterval);
-            clearTimeout(timeoutHandle);
-        };
-    }, [selectedCVId]);
-
-    const totalItems = filteredJobs.length;
-    const calculatedTotalPages = Math.ceil(totalItems / jobsPerPage);
-    const currentJobs = filteredJobs.slice(
-        (currentPage - 1) * jobsPerPage,
-        currentPage * jobsPerPage
-    );
+    // useMemo로 최적화
+    const { calculatedTotalPages, currentJobs } = useMemo(() => {
+        const totalItems = filteredJobs.length;
+        const calculatedTotalPages = Math.ceil(totalItems / jobsPerPage);
+        const currentJobs = filteredJobs.slice(
+            (currentPage - 1) * jobsPerPage,
+            currentPage * jobsPerPage
+        );
+        setIsLoading(false);
+        return { totalItems, calculatedTotalPages, currentJobs };
+    }, [filteredJobs, currentPage, jobsPerPage]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -216,58 +286,6 @@ function JobList() {
     const goToNextPage = () => {
         if (currentPage < calculatedTotalPages) handlePageChange(currentPage + 1);
     };
-
-    const handleExperienceClick = (item: string) => {
-        setExperienceFilterVector((prev) =>
-            prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-        );
-    };
-
-    const handleTypeClick = (item: string) => {
-        setTypeFilterVector((prev) =>
-            prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-        );
-    };
-
-    const JobExperienceFilter = () => (
-        <div
-            className={`${styles.jobList__filters__extend} ${
-                activeFilter === '경력' ? styles.active : ''
-            } ${activeFilter === '경력' ? '' : styles.hidden}`}
-            ref={experienceFilterRef}>
-            {filterData.jobExperience.map((item) => (
-                <div
-                    key={item}
-                    className={`${styles.jobList__filterButton} ${
-                        experienceFilterVector.includes(item) ? styles.active : ''
-                    }`}
-                    onClick={() => handleExperienceClick(item)}>
-                    {item}
-                </div>
-            ))}
-        </div>
-    );
-
-    const JobTypeFilter = () => (
-        <div
-            className={`${styles.jobList__filters__extend} ${
-                activeFilter === '근무 유형' ? styles.active : ''
-            } ${activeFilter === '근무 유형' ? '' : styles.hidden}`}
-            ref={typeFilterRef}>
-            {filterData.jobType.map((item) => (
-                <div
-                    key={item}
-                    className={`${styles.jobList__filterButton} ${
-                        typeFilterVector.includes(item) ? styles.active : ''
-                    }`}
-                    onClick={() => handleTypeClick(item)}>
-                    {item}
-                </div>
-            ))}
-        </div>
-    );
-
-    // 피드백 다이얼로그와 연관 공고 다이얼로그 분리해야함
 
     return (
         <>
@@ -297,7 +315,7 @@ function JobList() {
                             }>
                             경력
                         </div>
-                        {activeFilter === '경력' && <JobExperienceFilter />}
+                        {activeFilter === '경력' && JobExperienceFilter}
 
                         <div
                             className={`${styles.jobList__filterButton} ${
@@ -309,7 +327,7 @@ function JobList() {
                             ref={typeButtonRef}>
                             근무 유형
                         </div>
-                        {activeFilter === '근무 유형' && <JobTypeFilter />}
+                        {activeFilter === '근무 유형' && JobTypeFilter}
                     </div>
                 )}
 

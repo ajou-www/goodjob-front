@@ -7,6 +7,7 @@ import useApplyStore from '../../../../store/applyStore';
 import useBookmarkStore from '../../../../store/bookmarkStore';
 import useActionStore from '../../../../store/actionStore';
 import SimilarJobCard from './SimilarJobCard';
+import useRecommendationStore from '../../../../store/recommendationCacheStore';
 
 interface DialogSet {
     isDialog: boolean;
@@ -24,7 +25,7 @@ function JobDetail({ isDialog }: DialogSet) {
     const [isManaging, setIsManaging] = useState(false);
     const bookmarkedList = useBookmarkStore((state) => state.bookmarkList);
     const { addBookmark, removeBookmark, getBookmark } = useBookmarkStore();
-    const selectedCVId = useJobStore((state) => state.selectedCVId);
+    const selectedCVId = useRecommendationStore((state) => state.selectedCVId);
     const similarJobList = useJobStore((state) => state.similarJobList);
     const isJobListLoad = useActionStore((state) => state.isJobListLoad);
 
@@ -45,7 +46,6 @@ function JobDetail({ isDialog }: DialogSet) {
                 (app) => app.jobId === selectedJobDetail.id
             );
             setIsManaging(isCurrentJobManaged);
-            console.log(isCurrentJobManaged);
         }
     }, [applications, selectedJobDetail]);
 
@@ -321,7 +321,7 @@ function JobDetail({ isDialog }: DialogSet) {
                     <h2 className={style.section__title}>이 공고와 비슷한 공고들을 모아봤어요</h2>
                     <div className={style.similarJobListContainer}>
                         {similarJobList.map((item) => (
-                            <SimilarJobCard job={item} />
+                            <SimilarJobCard key={item.id} job={item} />
                         ))}
                     </div>
                 </section>
