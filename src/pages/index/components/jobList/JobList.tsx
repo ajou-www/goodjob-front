@@ -138,13 +138,7 @@ function JobList() {
         if (filtered.length > 0 && filtered[0].id !== (selectedJobDetail?.id ?? null)) {
             setSelectedJobDetail(filtered[0]);
         }
-    }, [
-        experienceFilterVector,
-        typeFilterVector,
-        jobList,
-        setSelectedJobDetail,
-        selectedJobDetail,
-    ]);
+    }, [experienceFilterVector, typeFilterVector, jobList]);
     // filteredJobs 제거
 
     const pollingActiveRef = useRef(true); // pollingActive를 useRef로 선언
