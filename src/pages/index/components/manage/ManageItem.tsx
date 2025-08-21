@@ -27,6 +27,7 @@ function ManageItem({
     const [showActions, setShowActions] = useState(false);
     const [editedNote, setEditedNote] = useState(job.note || '');
     const [dropUp, setDropUp] = useState(false);
+    const [actionMenuUp, setActionMenuUp] = useState(false);
     const noteInputRef = useRef<HTMLTextAreaElement>(null);
     const statusDropdownRef = useRef<HTMLDivElement>(null);
     const actionsMenuRef = useRef<HTMLDivElement>(null);
@@ -84,7 +85,7 @@ function ManageItem({
         }
     }, [isEditingNote]);
 
-    // 드롭다운 위치 계산
+    // 상태 옵션 드롭다운 위치 계산
     useEffect(() => {
         if (showStatusDropdown && statusDropdownRef.current) {
             const rect = statusDropdownRef.current.getBoundingClientRect();
@@ -96,6 +97,18 @@ function ManageItem({
             }
         }
     }, [showStatusDropdown, statusOptions.length]);
+
+    useEffect(() => {
+        if (showActions && actionsMenuRef.current) {
+            const rect = actionsMenuRef.current.getBoundingClientRect();
+            const dropdownHeight = 70;
+            if (rect.bottom + dropdownHeight > window.innerHeight) {
+                setActionMenuUp(true);
+            } else {
+                setActionMenuUp(false);
+            }
+        }
+    }, [showActions]);
 
     const handleNoteEdit = () => {
         setIsEditingNote(true);
@@ -345,7 +358,10 @@ function ManageItem({
                             </button>
 
                             {showActions && (
-                                <div className={style.item__actionsMenu}>
+                                <div
+                                    className={`${style.item__actionsMenu} ${
+                                        actionMenuUp ? style.dropUp : ''
+                                    }`}>
                                     <button
                                         className={`${style.item__actionsMenuItem} ${style.item__actionsMenuItemDanger}`}
                                         onClick={() => {

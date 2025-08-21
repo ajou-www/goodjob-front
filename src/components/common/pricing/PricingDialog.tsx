@@ -27,7 +27,7 @@ const PricingDialog: React.FC<PricingDialogProps> = ({ isOpen, onClose }) => {
 
         if (isOpen) {
             document.addEventListener('keydown', handleEscKey);
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }

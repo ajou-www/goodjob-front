@@ -152,7 +152,6 @@ const MainHeader = () => {
             }
         };
 
-        // setTimeout을 사용해 mousedown 이벤트와의 충돌을 피합니다.
         setTimeout(() => document.addEventListener('click', handleClickOutside), 0);
         return () => {
             document.removeEventListener('click', handleClickOutside);
@@ -206,7 +205,12 @@ const MainHeader = () => {
                                     placeholder="최신 채용 공고 검색하기"
                                     value={searchQuery}
                                     onChange={handleSearchChange}
-                                    onFocus={handleSearchFocus}
+                                    onFocus={(e) => {
+                                        // 오직 input 자신이 포커스될 때만 트리거
+                                        if (e.target === inputRef.current) {
+                                            handleSearchFocus();
+                                        }
+                                    }}
                                     onBlur={handleSearchBlur}
                                     className={styles.header__searchInput}
                                 />
@@ -299,14 +303,17 @@ const MainHeader = () => {
                         <button
                             className={styles.header__actionButton}
                             aria-label="알림"
-                            onClick={toggleAlertDropdown}>
+                            onClick={(e) => {
+                                toggleAlertDropdown();
+                                e.stopPropagation();
+                            }}>
                             <li data-badge="" style={{ display: 'inline-block' }}>
                                 <Bell size={24} color="#666666" />
                             </li>
                         </button>
                         {showAlertDropdown ? (
                             <div className={styles.alertDropdownWrapper} ref={alertDropdownRef}>
-                                <AlertDialog />
+                                <AlertDialog onClose={toggleAlertDropdown} />
                             </div>
                         ) : (
                             <></>

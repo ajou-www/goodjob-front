@@ -38,7 +38,8 @@ function JobList() {
     const experienceButtonRef = useRef<HTMLDivElement>(null);
     const typeButtonRef = useRef<HTMLDivElement>(null);
 
-    const { setSelectedJobDetail, jobList, getJobList, setJobList } = useJobStore(); // 추가
+    const { setSelectedJobDetail, jobList, getJobList, setJobList, setLastSelectedJob } =
+        useJobStore();
     const getSelectedCVId = useRecommendationStore((state) => state.getSelectedCVId);
     const { addBookmark, removeBookmark, getBookmark } = useBookmarkStore();
     const bookmarkedList = useBookmarkStore((state) => state.bookmarkList);
@@ -134,14 +135,12 @@ function JobList() {
 
         setFilteredJobs(filtered);
 
-        // selectedJobDetail과 비교하여 변경 시에만 setSelectedJobDetail 호출
         if (filtered.length > 0 && filtered[0].id !== (selectedJobDetail?.id ?? null)) {
             setSelectedJobDetail(filtered[0]);
         }
     }, [experienceFilterVector, typeFilterVector, jobList]);
-    // filteredJobs 제거
 
-    const pollingActiveRef = useRef(true); // pollingActive를 useRef로 선언
+    const pollingActiveRef = useRef(true);
 
     const fetchData = async () => {
         setIsJobListLoad(false);
@@ -175,7 +174,7 @@ function JobList() {
     useEffect(() => {
         let pollingInterval: NodeJS.Timeout;
         let timeoutHandle: NodeJS.Timeout;
-        pollingActiveRef.current = true; // polling 시작 시 true로 초기화
+        pollingActiveRef.current = true;
 
         const startPolling = async () => {
             await fetchData();
@@ -348,6 +347,7 @@ function JobList() {
                                         isSelected={false}
                                         onSelect={() => {
                                             setIsJobDetailDialogOpen(true);
+                                            setLastSelectedJob(job);
                                             setSelectedJobDetail(job);
                                             setGood(); // 유저 클릭 기록
                                             sendClickEvent(job.id); // 유저 클릭 기록

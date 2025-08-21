@@ -15,6 +15,7 @@ interface CvMe {
 interface JobStore {
     jobList: Job[];
     similarJobList: Job[];
+    lastSelectedJob: Job | JobContent | null;
     selectedCVId: number | null;
     filteredJobList: Job[] | null;
     selectedJob: Job | null;
@@ -23,7 +24,8 @@ interface JobStore {
     jobListRefreshTrigger: number;
     setSelectedJob: (job: Job) => void;
     setSelectedCvId: (cvId: number) => void;
-    setSelectedJobDetail: (job: Job | JobContent) => void;
+    setSelectedJobDetail: (job: Job | JobContent | null) => void;
+    setLastSelectedJob: (job: Job) => void;
     getSelectedJob: () => Job | null;
     getSelectedJobDetail: () => Job | JobContent | null;
     getFeedback: (jobId: number, cvId: number) => Promise<number>;
@@ -43,11 +45,13 @@ const useJobStore = create<JobStore>()(
             filteredJobList: [],
             selectedJob: null,
             selectedJobDetail: null,
+            lastSelectedJob: null,
             feedback: '',
             selectedCVId: null,
             jobListRefreshTrigger: Date.now(),
             setSelectedJob: (job) => set({ selectedJob: job }),
             setSelectedJobDetail: (job) => set({ selectedJobDetail: job }),
+            setLastSelectedJob: (job) => set({ lastSelectedJob: job }),
             setFilteredJobList: (filteredJobList) => set({ filteredJobList }),
             setSelectedCvId: (cvid) => set({ selectedCVId: cvid }),
             getSelectedJob: () => {
