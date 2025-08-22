@@ -706,12 +706,7 @@
     }
 }
 
-// 스켈레톤 UI 컨테이너 스타일 추가
 .skeletonContainer {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 @keyframes shimmer {

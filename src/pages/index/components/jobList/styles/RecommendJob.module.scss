@@ -15,7 +15,7 @@
 
     &__jobList {
         flex-basis: 500px;
-        min-width: 450px;
+        min-width: 500px;
         max-width: 500px;
         flex-shrink: 0;
         overflow-y: auto;
@@ -31,7 +31,8 @@
     &__jobDetail {
         display: flex;
         flex: 1;
-        max-width: 600px;
+        max-width: 577px;
+        // min-width: 600px;
         overflow-y: auto;
         border-radius: 12px;
         background-color: #ffffff;
