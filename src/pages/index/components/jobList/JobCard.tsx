@@ -45,7 +45,9 @@ function JobCard({ job, isSelected, onSelect, onToggleBookmark }: JobCardProps) 
                             aria-label={job.isBookmarked ? '북마크 취소' : '북마크 추가'}>
                             <Bookmark size={30} fill={job.isBookmarked ? '#f4b11f' : 'none'} />
                         </button>
-                        <div className={style.jobCard__score}>{job.score?.toFixed(1)}</div>
+                        <div className={style.jobCard__score}>
+                            {job.score ? job.score?.toFixed(1) : '추천 점수가 없습니다'}
+                        </div>
                     </div>
                 </div>
 

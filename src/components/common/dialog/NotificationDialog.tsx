@@ -1,79 +1,94 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import style from './styles/NotificationDialog.module.scss';
-import { Newspaper, X, Rocket, ClockAlert } from 'lucide-react';
+import { Newspaper, X, ClockAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import NewJobDialog from './NewJobDialog';
 import useJobStore from '../../../store/jobStore';
+import useNotificationStore from '../../../store/NotificationStore';
+import { NotificationJobItem } from '../../../types/notification';
 
-interface AlertDialogProps {
+interface NotificationDialogProps {
     onClose: () => void;
 }
-function AlertDialog({ onClose }: AlertDialogProps) {
+function NotificationDialog({ onClose }: NotificationDialogProps) {
     const dropDownRef = useRef<HTMLDivElement>(null);
+    const [notificationProps, setNotificationProps] = useState<NotificationJobItem[] | null>(null);
     const [viewNewJobList, setViewNewJobList] = useState(false);
-    const [viewPopularJobList, setViewPopularJobList] = useState(false);
+
     const navigate = useNavigate();
+    const { fetchNotiList, deleteNoti } = useNotificationStore();
+    const notiList = useNotificationStore((state) => state.notiList);
     const { setSelectedJobDetail, lastSelectedJob } = useJobStore();
-    const mockNotiData = [
-        { id: '새로운공고', data: '**님에게 적합한 공고 5개 발견!!', icon: Newspaper },
-        {
-            id: '인기공고',
-            data: '어제 goodJob에서 인기가 많았던 공고들을 확인하세요!!',
-            icon: Rocket,
-        },
-        { id: '마감임박', data: '2개 공고의 마감일이 다가오고 있습니다!!', icon: ClockAlert },
-    ] as const;
 
-    const handleRemove = () => {};
+    const handleRemove = (id: number) => {
+        deleteNoti(id);
+    };
 
-    const handleClick = (id: string) => {
-        if (id === '새로운공고') {
+    const handleClick = (type: string, jobs?: NotificationJobItem[]) => {
+        if (type === 'CV_MATCH') {
+            setNotificationProps(jobs ?? null);
             setViewNewJobList(true);
         }
-        if (id === '인기공고') {
-            setViewPopularJobList(true);
-        }
-        if (id === '마감임박') {
+
+        if (type === 'APPLY_DUE') {
             onClose();
             navigate('/main/manage');
         }
     };
 
+    const itemIcon = (type: string) => {
+        if (type === 'CV_MATCH') {
+            return <Newspaper />;
+        }
+        if (type === 'JOB_POPULAR') {
+            return <ClockAlert />;
+        }
+    };
+
+    useEffect(() => {
+        fetchNotiList(true, 'CV_MATCH'); // 알람 리스트 불러오기
+    }, [fetchNotiList, deleteNoti]);
+
     return (
         <>
             {viewNewJobList ? (
                 <NewJobDialog
+                    props={notificationProps}
                     onClose={() => {
-                        setViewNewJobList(false);
+                        setViewNewJobList(!viewNewJobList);
                         setSelectedJobDetail(lastSelectedJob);
                     }}
                 />
             ) : (
                 <></>
             )}
-            {viewPopularJobList ? <></> : <></>}
+
             <div className={style.dropdown} ref={dropDownRef}>
                 <ul className={style.notiBox}>
-                    {mockNotiData.map((item) => (
+                    {notiList.map((item) => (
                         <div className={style.notiContainer}>
                             <div
                                 className={style.notiContainer__wrapper}
                                 onClick={(e) => {
-                                    handleClick(item.id);
+                                    handleClick(item.type, item.jobs);
                                     e.stopPropagation();
                                 }}>
-                                <item.icon />
+                                {itemIcon(item.type)}
                                 <div className={style.notiContainer__textSection}>
                                     <p className={style.notiContainer__textSection__title}>
-                                        {item.data}
+                                        {item.alarmText}
                                     </p>
                                     <p className={style.notiContainer__textSection__time}>
-                                        2025년 8월 13일
+                                        {item.sentAt.split('T')[0]}
                                     </p>
                                 </div>
                             </div>
 
-                            <X className={style.removeButton} size={20} onClick={handleRemove} />
+                            <X
+                                className={style.removeButton}
+                                size={20}
+                                onClick={() => handleRemove(item.id)}
+                            />
                         </div>
                     ))}
                 </ul>
@@ -82,4 +97,4 @@ function AlertDialog({ onClose }: AlertDialogProps) {
     );
 }
 
-export default AlertDialog;
+export default NotificationDialog;
