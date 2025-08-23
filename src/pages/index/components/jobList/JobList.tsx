@@ -255,9 +255,9 @@ function JobList() {
         }
     };
 
-    // useMemo로 최적화
     const { calculatedTotalPages, currentJobs } = useMemo(() => {
         const totalItems = filteredJobs.length;
+        setLastSelectedJob(filteredJobs[0]);
         const calculatedTotalPages = Math.ceil(totalItems / jobsPerPage);
         const currentJobs = filteredJobs.slice(
             (currentPage - 1) * jobsPerPage,

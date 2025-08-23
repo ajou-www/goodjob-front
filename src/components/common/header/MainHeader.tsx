@@ -8,7 +8,7 @@ import type Job from '../../../types/job';
 import UniversalDialog from '../dialog/UniversalDialog';
 import useSearchStore from '../../../store/searchStore';
 import axiosInstance from '../../../api/axiosInstance';
-import AlertDialog from '../dialog/NotificationDialog';
+import NotificationDialog from '../dialog/NotificationDialog';
 
 const MainHeader = () => {
     const [searchQuery, setSearchQuery] = useState(''); // 검색어
@@ -313,7 +313,7 @@ const MainHeader = () => {
                         </button>
                         {showAlertDropdown ? (
                             <div className={styles.alertDropdownWrapper} ref={alertDropdownRef}>
-                                <AlertDialog onClose={toggleAlertDropdown} />
+                                <NotificationDialog onClose={toggleAlertDropdown} />
                             </div>
                         ) : (
                             <></>

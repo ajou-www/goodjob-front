@@ -5,7 +5,7 @@ import { Bookmark, Share2, MapPin, Calendar, Clock, Briefcase, Bot } from 'lucid
 import Feedback from './FeedbackDialog';
 import useApplyStore from '../../../../store/applyStore';
 import useBookmarkStore from '../../../../store/bookmarkStore';
-import useActionStore from '../../../../store/actionStore';
+// import useActionStore from '../../../../store/actionStore';
 import SimilarJobCard from './SimilarJobCard';
 import useRecommendationStore from '../../../../store/recommendationCacheStore';
 
@@ -27,7 +27,7 @@ function JobDetail({ isDialog }: DialogSet) {
     const { addBookmark, removeBookmark, getBookmark } = useBookmarkStore();
     const selectedCVId = useRecommendationStore((state) => state.selectedCVId);
     const similarJobList = useJobStore((state) => state.similarJobList);
-    const isJobListLoad = useActionStore((state) => state.isJobListLoad);
+    // const isJobListLoad = useActionStore((state) => state.isJobListLoad);
 
     useEffect(() => {
         isFeedbackLoadingRef.current = false;
@@ -59,7 +59,6 @@ function JobDetail({ isDialog }: DialogSet) {
         }
     }, [bookmarkedList, selectedJobDetail]);
 
-    // 피드백 아이콘 bounce 클래스 자동 제거
     useEffect(() => {
         if (selectedJobDetail) {
             const icon = document.querySelector(`#bot-icon-${selectedJobDetail.id}`);
@@ -69,9 +68,12 @@ function JobDetail({ isDialog }: DialogSet) {
         }
     }, [selectedJobDetail, style.bounce]);
 
+    const prevJobIdRef = useRef<number | null>(null);
+
     useEffect(() => {
-        if (job?.id) {
+        if (job?.id && prevJobIdRef.current !== job.id) {
             getSimilarJobList(7, job.id);
+            prevJobIdRef.current = job.id;
         }
     }, [job?.id, getSimilarJobList]);
 
@@ -172,7 +174,10 @@ function JobDetail({ isDialog }: DialogSet) {
     };
 
     /** 로딩 시 스켈레톤 UI 출력 */
-    if (!job || !isJobListLoad) {
+    // if (!job || !isJobListLoad) {
+    //     return <JobDetailSkeleton />;
+    // }
+    if (!job) {
         return <JobDetailSkeleton />;
     }
 
