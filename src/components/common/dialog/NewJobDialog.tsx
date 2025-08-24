@@ -10,6 +10,7 @@ import JobDetail from '../../../pages/index/components/jobList/JobDetail';
 import { NotificationJobItem } from '../../../types/notification';
 import useUserStore from '../../../store/userStore';
 import LoadingAnime1 from '../loading/LoadingAnime1';
+import useBookmarkStore from '../../../store/bookmarkStore';
 
 interface NewJobDialogProps {
     onClose: () => void;
@@ -23,8 +24,17 @@ function NewJobDialog({ onClose, props }: NewJobDialogProps) {
     const [isJobDetailDialogOpen, setIsJobDetailDialogOpen] = useState(false);
     const { setSelectedJobDetail, lastSelectedJob } = useJobStore();
     const { name } = useUserStore();
+    const bookmarkedList = useBookmarkStore((state) => state.bookmarkList);
+    const { addBookmark, removeBookmark, getBookmark } = useBookmarkStore();
 
-    // 다이얼로그가 열릴 때 input이 focus 상태면 blur 처리
+    // 낙관적 렌더링용 북마크 id 배열
+    const [optimisticBookmarks, setOptimisticBookmarks] = useState<number[]>([]);
+
+    // 북마크 목록이 바뀌면 동기화
+    useEffect(() => {
+        setOptimisticBookmarks(bookmarkedList?.map((job) => job.id) ?? []);
+    }, [bookmarkedList]);
+
     useEffect(() => {
         if (document.activeElement && document.activeElement instanceof HTMLInputElement) {
             document.activeElement.blur();
@@ -57,6 +67,30 @@ function NewJobDialog({ onClose, props }: NewJobDialogProps) {
     useEffect(() => {
         fetchNotiJobList(props);
     }, [fetchNotiJobList]);
+
+    const toggleBookmark = async (jobId: number) => {
+        const isBookmarked = optimisticBookmarks.includes(jobId);
+
+        // UI 즉시 반영
+        setOptimisticBookmarks((prev) =>
+            isBookmarked ? prev.filter((id) => id !== jobId) : [...prev, jobId]
+        );
+
+        try {
+            if (isBookmarked) {
+                await removeBookmark(jobId);
+            } else {
+                await addBookmark(jobId);
+            }
+            await getBookmark();
+        } catch (error) {
+            // 실패 시 롤백
+            setOptimisticBookmarks((prev) =>
+                isBookmarked ? [...prev, jobId] : prev.filter((id) => id !== jobId)
+            );
+            console.error('북마크 토글 중 오류 발생:', error);
+        }
+    };
 
     const dialog = (
         <>
@@ -108,15 +142,14 @@ function NewJobDialog({ onClose, props }: NewJobDialogProps) {
                                             key={job.id}
                                             job={{
                                                 ...job,
-                                                // isBookmarked: !!bookmarkedList?.some((b) => b.id === job.id),
+                                                isBookmarked: optimisticBookmarks.includes(job.id),
                                             }}
                                             isSelected={false}
                                             onSelect={() => {
                                                 setIsJobDetailDialogOpen(true);
-                                                // mountJobDetailDialog();
                                                 setSelectedJobDetail(job);
                                             }}
-                                            onToggleBookmark={() => {}}
+                                            onToggleBookmark={() => toggleBookmark(job.id)}
                                         />
                                     ))
                                 ) : (
