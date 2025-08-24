@@ -72,6 +72,7 @@
     overflow-y: auto;
     position: relative;
     animation: fadeInScale 0.3s ease-out;
+    transition: background-color 0.2s ease, color 0.2s ease;
 
     &__header {
         display: flex;
@@ -117,9 +118,7 @@
         // display: grid;
         // grid-template-columns: repeat(2, 1fr);
 
-        // 모바일 및 태블릿 반응형 처리
         @media (max-width: 900px) {
-            // 2개씩 보이도록 조정
             flex-wrap: wrap;
         }
         @media (max-width: 640px) {
@@ -127,6 +126,15 @@
             align-items: center;
             gap: 1.5rem;
         }
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #d8edff;
+        border-radius: 4px;
     }
 }
 

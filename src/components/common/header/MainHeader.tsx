@@ -9,6 +9,7 @@ import UniversalDialog from '../dialog/UniversalDialog';
 import useSearchStore from '../../../store/searchStore';
 import axiosInstance from '../../../api/axiosInstance';
 import NotificationDialog from '../dialog/NotificationDialog';
+import useNotificationStore from '../../../store/NotificationStore';
 
 const MainHeader = () => {
     const [searchQuery, setSearchQuery] = useState(''); // 검색어
@@ -24,6 +25,9 @@ const MainHeader = () => {
     const inputRef = useRef<HTMLInputElement>(null);
     const setCompactMenu = usePageStore((state) => state.setCompactMenu);
     const isCompactMenu = usePageStore((state) => state.isCompactMenu);
+    const { fetchNotiList } = useNotificationStore();
+    const notiList_match = useNotificationStore((state) => state.notiList_match);
+    const notiList_due = useNotificationStore((state) => state.notiList_due);
     const { setQuery } = useSearchStore();
     const navigate = useNavigate();
 
@@ -140,6 +144,11 @@ const MainHeader = () => {
         return () => {
             window.removeEventListener('search-history-changed', handleStorageChange);
         };
+    }, []);
+
+    useEffect(() => {
+        fetchNotiList(false, 'CV_MATCH'); // 알람 리스트 불러오기
+        fetchNotiList(false, 'APPLY_DUE'); // 마감 임박 리스트 불러오기
     }, []);
 
     useEffect(() => {
@@ -307,7 +316,13 @@ const MainHeader = () => {
                                 toggleAlertDropdown();
                                 e.stopPropagation();
                             }}>
-                            <li data-badge="" style={{ display: 'inline-block' }}>
+                            <li
+                                {...((notiList_match.length > 0 || notiList_due.length > 0) && {
+                                    'data-badge': '',
+                                })}
+                                style={{
+                                    display: 'inline-block',
+                                }}>
                                 <Bell size={24} color="#666666" />
                             </li>
                         </button>

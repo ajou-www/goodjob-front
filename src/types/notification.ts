@@ -1,7 +1,7 @@
 export interface NotificationJobItem {
     jobId: number;
     rank: number;
-    clicked: boolean | null;
+    clickedAt: boolean | null;
 }
 
 export type NotificationType = 'CV_MATCH' | 'APPLY_DUE' | 'JOB_POPULAR';

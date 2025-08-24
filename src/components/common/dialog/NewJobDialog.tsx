@@ -9,6 +9,7 @@ import useNotificationStore from '../../../store/NotificationStore';
 import JobDetail from '../../../pages/index/components/jobList/JobDetail';
 import { NotificationJobItem } from '../../../types/notification';
 import useUserStore from '../../../store/userStore';
+import LoadingAnime1 from '../loading/LoadingAnime1';
 
 interface NewJobDialogProps {
     onClose: () => void;
@@ -119,7 +120,7 @@ function NewJobDialog({ onClose, props }: NewJobDialogProps) {
                                         />
                                     ))
                                 ) : (
-                                    <></>
+                                    <LoadingAnime1 />
                                 )}
                             </div>
                         </>

@@ -98,23 +98,9 @@
     }
 
     &__content {
-        // flex: 1;
         padding: 1.5rem;
         overflow-y: auto;
         overflow-x: hidden;
-
-        &::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: #d8edff;
-            border-radius: 4px;
-        }
     }
 
     &__title {
@@ -254,10 +240,6 @@
     overflow-y: auto;
     background-color: #ffffff;
     border-radius: 12px;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
 
     &::-webkit-scrollbar-track {
         background: #f1f1f1;
@@ -763,8 +745,6 @@
         }
     }
 }
-
-// actionButtons.module.scss
 
 @keyframes bounce {
     0%,

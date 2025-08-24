@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import style from './Header.module.scss';
-import { Search, Bell, Menu, X, ClipboardList, Star, Bookmark, User } from 'lucide-react';
+import { Search, Menu, X, ClipboardList, Star, Bookmark, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/authStore';
 import ProfileDialog from '../dialog/ProfileDialog';
@@ -85,12 +85,6 @@ function Header() {
                             {searchDialogOpen && (
                                 <SearchDialog onClose={() => setSearchDialogOpen(false)} />
                             )}
-
-                            <Bell
-                                className={style.header__notification}
-                                aria-label="알림"
-                                size={38}
-                            />
 
                             <ProfileDialog />
                         </>

@@ -316,7 +316,7 @@ function CVUpload() {
                 <p className={style.terms}>
                     goodJob에 파일을 업로드함으로써, 당사 이용약관에 동의하고
                 </p>
-                <p className={style.terms}>개인정보 보호 정책에 읽은 것으로 간주합니다.</p>
+                <p className={style.terms}>개인정보 보호 정책을 읽은 것으로 간주합니다.</p>
             </div>
         </div>
     );
