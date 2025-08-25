@@ -67,7 +67,8 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
             )}
 
             <div className={style.dropdown} ref={dropDownRef}>
-                {!Array.isArray(notiList_match) || notiList_match.length === 0 ? (
+                {!Array.isArray(notiList_match) ||
+                (notiList_match.length === 0 && notiList_due.length === 0) ? (
                     <LoadingSpinner />
                 ) : (
                     <ul className={style.notiBox}>
