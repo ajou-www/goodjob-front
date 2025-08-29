@@ -13,7 +13,7 @@ interface NotificationStore {
     getnotiJobList: (unreadOnly: boolean, type: string) => void;
     fetchNotiList: (unreadOnly: boolean, type: string) => void;
     fetchNotiJobList: (notis: NotificationJobItem[] | null) => void;
-    deleteNoti: (id: number) => void;
+    deleteNoti: (id: number) => Promise<number>;
 }
 
 const useNotificationStore = create<NotificationStore>()((set) => ({
@@ -104,11 +104,7 @@ const useNotificationStore = create<NotificationStore>()((set) => ({
             withCredentials: true,
         });
 
-        if (res.status === 200) {
-            console.log('알람 삭제 완료');
-        } else {
-            console.log('알람 삭제 실패');
-        }
+        return res.status;
     },
 }));
 

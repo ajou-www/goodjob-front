@@ -22,12 +22,24 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
     const notiList_due = useNotificationStore((state) => state.notiList_due);
     const { setSelectedJobDetail, lastSelectedJob } = useJobStore();
 
-    const handleRemove = (id: number) => {
-        deleteNoti(id);
+    const handleRemove = async (id: number) => {
+        const res = await deleteNoti(id);
+        if (res === 200) {
+            fetchNotiList(false, 'CV_MATCH');
+            fetchNotiList(false, 'APPLY_DUE');
+        }
+        return;
     };
 
-    const handleClick = (type: string, jobs?: NotificationJobItem[]) => {
+    const handleClick = (
+        id: number,
+        type: string,
+        isRead: boolean,
+        jobs?: NotificationJobItem[]
+    ) => {
+        if (!isRead) fetchRead(id);
         if (type === 'CV_MATCH') {
+            fetchNotiList(false, 'CV_MATCH');
             setNotificationProps(jobs ?? null);
             setViewNewJobList(true);
         }
@@ -48,9 +60,9 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
     };
 
     useEffect(() => {
-        fetchNotiList(false, 'CV_MATCH'); // 알람 리스트 불러오기
-        fetchNotiList(false, 'APPLY_DUE'); // 마감 임박 리스트 불러오기
-    }, [fetchNotiList, deleteNoti]);
+        fetchNotiList(false, 'CV_MATCH');
+        fetchNotiList(false, 'APPLY_DUE');
+    }, [fetchNotiList]);
 
     return (
         <>
@@ -79,8 +91,7 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
                                 <div
                                     className={style.notiContainer__wrapper}
                                     onClick={(e) => {
-                                        handleClick(item.type, item.jobs);
-                                        if (!item.read) fetchRead(item.id);
+                                        handleClick(item.id, item.type, item.read, item.jobs);
                                         e.stopPropagation();
                                     }}>
                                     {itemIcon(item.type)}
@@ -108,8 +119,7 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
                                 <div
                                     className={style.notiContainer__wrapper}
                                     onClick={(e) => {
-                                        handleClick(item.type, item.jobs);
-                                        if (!item.read) fetchRead(item.id);
+                                        handleClick(item.id, item.type, item.read, item.jobs);
                                         e.stopPropagation();
                                     }}>
                                     {itemIcon(item.type)}
