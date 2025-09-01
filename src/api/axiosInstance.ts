@@ -4,7 +4,7 @@ import { SERVER_IP } from '../../src/constants/env';
 
 const axiosInstance = axios.create({
     baseURL: `${SERVER_IP}`,
-    withCredentials: true, // 쿠키로 refreshToken 전달
+    withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
@@ -30,12 +30,17 @@ axiosInstance.interceptors.response.use(
                 const { accessToken } = res.data;
                 useAuthStore.getState().setTokens(accessToken);
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                return axiosInstance(originalRequest); // 재요청
+                return axiosInstance(originalRequest);
             } catch (refreshError) {
                 useAuthStore.getState().clearTokens();
-                window.location.href = '/signIn'; // 새 로그인 유도
+                window.location.href = '/signIn';
                 return Promise.reject(refreshError);
             }
+        }
+
+        if (error.response?.status === 302) {
+            window.location.href = '/signIn';
+            return Promise.reject(error);
         }
 
         return Promise.reject(error);
