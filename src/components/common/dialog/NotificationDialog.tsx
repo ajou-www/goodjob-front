@@ -24,29 +24,35 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
 
     const handleRemove = async (id: number) => {
         const res = await deleteNoti(id);
-        if (res === 200) {
+        console.log(res);
+        if (res === 204) {
             fetchNotiList(false, 'CV_MATCH');
             fetchNotiList(false, 'APPLY_DUE');
         }
         return;
     };
 
-    const handleClick = (
+    const handleClick = async (
         id: number,
         type: string,
         isRead: boolean,
         jobs?: NotificationJobItem[]
     ) => {
-        if (!isRead) fetchRead(id);
-        if (type === 'CV_MATCH') {
-            fetchNotiList(false, 'CV_MATCH');
-            setNotificationProps(jobs ?? null);
-            setViewNewJobList(true);
+        let readResult: number = 0;
+        if (!isRead) {
+            readResult = await fetchRead(id);
         }
+        if (isRead || readResult === 200) {
+            if (type === 'CV_MATCH') {
+                fetchNotiList(false, 'CV_MATCH');
+                setNotificationProps(jobs ?? null);
+                setViewNewJobList(true);
+            }
 
-        if (type === 'APPLY_DUE') {
-            onClose();
-            navigate('/main/manage');
+            if (type === 'APPLY_DUE') {
+                onClose();
+                navigate('/main/manage');
+            }
         }
     };
 

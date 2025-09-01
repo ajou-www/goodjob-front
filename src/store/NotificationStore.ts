@@ -9,7 +9,7 @@ interface NotificationStore {
     notiList_due: notification[];
     notiJobList: Job[];
     jobIdList: Set<number>[];
-    fetchRead: (notiId: number) => void;
+    fetchRead: (notiId: number) => Promise<number>;
     getnotiJobList: (unreadOnly: boolean, type: string) => void;
     fetchNotiList: (unreadOnly: boolean, type: string) => void;
     fetchNotiJobList: (notis: NotificationJobItem[] | null) => void;
@@ -23,12 +23,13 @@ const useNotificationStore = create<NotificationStore>()((set) => ({
     jobIdList: [],
     fetchRead: async (id) => {
         const accessToken = useAuthStore.getState().accessToken;
-        await axiosInstance.patch(`/alarms/${id}/read`, {
+        const res = await axiosInstance.patch(`/alarms/${id}/read`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
             withCredentials: true,
         });
+        return res.status;
     },
     getnotiJobList: async (unreadOnly, type) => {
         const accessToken = useAuthStore.getState().accessToken;
