@@ -1,5 +1,6 @@
 import Calendar from 'react-calendar';
 import style from './styles/CalendarDialog.module.scss';
+import buttonStyle from '../buttons/styles/CloseButton.module.scss';
 import 'react-calendar/dist/Calendar.css';
 import { useCallback, useRef, useState } from 'react';
 import { X } from 'lucide-react';
@@ -42,7 +43,7 @@ function CalendarDialog({ toggle, onSelectDate, title }: CalendarDialogProps) {
             <div className={style.modal} ref={calenderRef}>
                 <div className={style.modal__header}>
                     <h2 className={style.modal__header__title}>{title}</h2>
-                    <X className={style.modal__closeButton} size={24} onClick={toggle} />
+                    <X className={buttonStyle.closeButton} size={20} onClick={toggle} />
                 </div>
                 <div className={style.modal__content}>
                     <Calendar

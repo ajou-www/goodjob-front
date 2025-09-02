@@ -18,6 +18,8 @@
     flex-direction: column;
     gap: 2rem;
     background-color: transparent;
+    justify-content: center;
+    align-items: center;
     width: 100dvw;
     padding: 1rem;
 
@@ -25,9 +27,11 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        width: 500px;
 
         &__title {
             color: black;
+            padding-right: 1rem;
         }
     }
 
@@ -53,5 +57,10 @@
         &:active {
             transform: scale(0.95);
         }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
     }
 }

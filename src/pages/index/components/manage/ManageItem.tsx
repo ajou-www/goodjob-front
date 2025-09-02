@@ -3,6 +3,7 @@ import type application from '../../../../types/application';
 import style from './styles/ManageItem.module.scss';
 import { Trash, Check, X, MoreHorizontal } from 'lucide-react';
 import CalendarDialog from '../../../../components/common/dialog/CalendarDialog';
+import 'react-calendar/dist/Calendar.css';
 
 interface ManageItemProps {
     job: application;
@@ -149,7 +150,7 @@ function ManageItem({
                 <CalendarDialog
                     toggle={toggleCalendar}
                     onSelectDate={handleDateSelect}
-                    title="이 공고의 마감일을 설정하세요"
+                    title="이 공고의 마감일을 지정하세요"
                 />
             ) : (
                 <></>
