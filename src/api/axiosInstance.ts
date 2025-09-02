@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
                 useAuthStore.getState().clearTokens();
-                // window.location.href = '/signIn';
+                window.location.href = '/signIn';
                 return Promise.reject(refreshError);
             }
         }

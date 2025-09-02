@@ -24,7 +24,8 @@ function HeaderNotificationButton() {
                     e.stopPropagation();
                 }}>
                 <li
-                    {...((notiList_match.length > 0 || notiList_due.length > 0) && {
+                    {...((notiList_match.some((item) => item.read === false) ||
+                        notiList_due.some((item) => item.read === false)) && {
                         'data-badge': '',
                     })}
                     style={{
