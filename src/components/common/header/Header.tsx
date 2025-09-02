@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/authStore';
 import ProfileDialog from '../dialog/ProfileDialog';
 import SearchDialog from '../dialog/SearchDialog';
+import HeaderNotificationButton from '../buttons/HeaderNotificationButton';
 
 function Header() {
     // 검색 관련
@@ -81,6 +82,7 @@ function Header() {
                             ) : (
                                 <></>
                             )}
+                            <HeaderNotificationButton />
 
                             {searchDialogOpen && (
                                 <SearchDialog onClose={() => setSearchDialogOpen(false)} />

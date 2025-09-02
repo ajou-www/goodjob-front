@@ -1,0 +1,49 @@
+.actionButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333333;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #f4f5f6;
+    }
+
+    &__icon {
+        color: #666666;
+        @media (max-width: 480px) {
+            color: #333;
+        }
+    }
+
+    @media (max-width: 480px) {
+    }
+}
+
+[data-badge] {
+    position: relative;
+    &:after {
+        position: absolute;
+        right: -7px;
+        top: -7px;
+        min-width: 1px;
+        min-height: 1px;
+        line-height: 1px;
+        padding: 3px;
+        color: #fff;
+        background-color: #bf1f1f;
+        font-size: 10px;
+        border-radius: 20px;
+        content: attr(data-badge);
+        border: solid 1px #c93a3a;
+    }
+}
+
+.alertDropdownWrapper {
+    display: contents;
+}

@@ -12,7 +12,7 @@ import {
 import usePageStore from '../../../store/pageStore';
 import style from './SideBar.module.scss';
 import useUserStore from '../../../store/userStore';
-import SideBarProfileDialog from '../dialog/SideBarProfileDialog';
+import SideBarProfileButton from '../buttons/SideBarProfileButton';
 import { useEffect, useState } from 'react'; // useState 추가
 import useAuthStore from '../../../store/authStore';
 import PricingDialog from '../pricing/PricingDialog'; // PricingDialog import 추가
@@ -183,7 +183,7 @@ function SideBar() {
 
                             <span className={style.divider}></span>
                             <div className={style.sidebar__profile}>
-                                <SideBarProfileDialog />
+                                <SideBarProfileButton />
                                 <div className={style.sidebar__profile__textArea}>
                                     <p className={style.userName}>{name}</p>
                                     <p className={style.userEmail}>{email}</p>

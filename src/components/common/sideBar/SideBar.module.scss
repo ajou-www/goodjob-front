@@ -143,7 +143,7 @@
 
     &__hidden {
         width: 70px;
-
+        min-width: 70px;
         .plan {
             display: none;
         }

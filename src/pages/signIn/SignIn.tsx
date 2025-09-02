@@ -18,8 +18,7 @@ function SignIn() {
                         </h1>
 
                         <p className={style.login__subtitle}>
-                            goodJob이 찾아주는 당신만의 커리어, 지금 시작하세요.{' '}
-                            {/* 모바일 최적화 필요.. 문장 두 개로 분리 */}
+                            goodJob이 찾아주는 당신만의 커리어, 지금 시작하세요.
                         </p>
                         <div className={style.login__buttons}>
                             <GoogleSignIn />

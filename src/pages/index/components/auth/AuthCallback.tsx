@@ -37,7 +37,6 @@ function AuthCallback() {
                     return;
                 }
 
-                // 로컬 스토리지의 CV 여부 검사
                 if (!localStorage.getItem('cv-storage')) {
                     try {
                         await getSelectedCvId();

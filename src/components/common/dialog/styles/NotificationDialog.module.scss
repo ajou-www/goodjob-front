@@ -29,6 +29,12 @@
         background: #d8edff;
         border-radius: 4px;
     }
+
+    @media (max-width: 480px) {
+        top: calc(100% + 1px);
+        max-height: 400px;
+        max-width: 100dvw;
+    }
 }
 
 .notiContainer {
@@ -83,4 +89,7 @@
 
 .read {
     color: #666;
+}
+.hidden {
+    display: none;
 }

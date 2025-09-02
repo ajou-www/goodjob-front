@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search, ChevronRight, X, Bell } from 'lucide-react';
+import { Search, ChevronRight, X } from 'lucide-react';
 import style from './MainHeader.module.scss';
 import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
@@ -7,8 +7,8 @@ import type Job from '../../../types/job';
 import UniversalDialog from '../dialog/UniversalDialog';
 import useSearchStore from '../../../store/searchStore';
 import axiosInstance from '../../../api/axiosInstance';
-import NotificationDialog from '../dialog/NotificationDialog';
 import useNotificationStore from '../../../store/NotificationStore';
+import HeaderNotificationButton from '../buttons/HeaderNotificationButton';
 
 const MainHeader = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -23,8 +23,7 @@ const MainHeader = () => {
     const searchContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const { fetchNotiList } = useNotificationStore();
-    const notiList_match = useNotificationStore((state) => state.notiList_match);
-    const notiList_due = useNotificationStore((state) => state.notiList_due);
+
     const { setQuery } = useSearchStore();
     const navigate = useNavigate();
 
@@ -124,10 +123,6 @@ const MainHeader = () => {
         getSearchHistory();
     };
 
-    const toggleAlertDropdown = () => {
-        setShowAlertDropdown(!showAlertDropdown);
-    };
-
     useEffect(() => {
         const handleStorageChange = () => {
             getSearchHistory();
@@ -148,7 +143,6 @@ const MainHeader = () => {
         if (!showAlertDropdown) return;
 
         const handleClickOutside = (e: MouseEvent) => {
-            // 드롭다운 자기 자신이나 그 자식 요소를 클릭한게 아니라면 닫습니다.
             if (alertDropdownRef.current && !alertDropdownRef.current.contains(e.target as Node)) {
                 setShowAlertDropdown(false);
             }
@@ -292,32 +286,7 @@ const MainHeader = () => {
                     </div>
                 </div>
                 <div className={style.header__actions}>
-                    <>
-                        <button
-                            className={style.header__actionButton}
-                            aria-label="알림"
-                            onClick={(e) => {
-                                toggleAlertDropdown();
-                                e.stopPropagation();
-                            }}>
-                            <li
-                                {...((notiList_match.length > 0 || notiList_due.length > 0) && {
-                                    'data-badge': '',
-                                })}
-                                style={{
-                                    display: 'inline-block',
-                                }}>
-                                <Bell size={24} color="#666666" />
-                            </li>
-                        </button>
-                        {showAlertDropdown ? (
-                            <div className={style.alertDropdownWrapper} ref={alertDropdownRef}>
-                                <NotificationDialog onClose={toggleAlertDropdown} />
-                            </div>
-                        ) : (
-                            <></>
-                        )}
-                    </>
+                    <HeaderNotificationButton />
                 </div>
             </header>
         </>

@@ -33,14 +33,9 @@ axiosInstance.interceptors.response.use(
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
                 useAuthStore.getState().clearTokens();
-                window.location.href = '/signIn';
+                // window.location.href = '/signIn';
                 return Promise.reject(refreshError);
             }
-        }
-
-        if (error.response?.status === 302) {
-            window.location.href = '/signIn';
-            return Promise.reject(error);
         }
 
         return Promise.reject(error);

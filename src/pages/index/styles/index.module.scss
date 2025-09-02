@@ -3,7 +3,6 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    height: auto;
     max-height: 100vh;
     min-height: 100vh;
     background-color: #f5f9fd;
@@ -19,8 +18,8 @@
 }
 .layout__wrapper {
     max-width: 1400px;
-    padding: 0 16px; /* 좌우 여백 */
-    width: 100%; /* 반응형 유지 */
+    padding: 0 16px;
+    width: 100%;
     box-sizing: border-box;
     margin: 0 auto;
     background-color: #f5f9fd;
@@ -75,12 +74,11 @@
     }
 
     &__jobList {
-        min-width: 545px; // 필요한 경우 축소 허용
+        min-width: 545px;
         max-width: 545px;
         overflow-y: auto;
         border-radius: 20px;
         background-color: #ffffff;
-        // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     &__jobDetail {

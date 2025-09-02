@@ -6,12 +6,12 @@ import NewJobDialog from './NewJobDialog';
 import useJobStore from '../../../store/jobStore';
 import useNotificationStore from '../../../store/NotificationStore';
 import { NotificationJobItem } from '../../../types/notification';
-import LoadingSpinner from '../loading/LoadingSpinner';
 
 interface NotificationDialogProps {
-    onClose: () => void;
+    toggle: () => void;
+    isClose: boolean;
 }
-function NotificationDialog({ onClose }: NotificationDialogProps) {
+function NotificationDialog({ toggle, isClose }: NotificationDialogProps) {
     const dropDownRef = useRef<HTMLDivElement>(null);
     const [notificationProps, setNotificationProps] = useState<NotificationJobItem[] | null>(null);
     const [viewNewJobList, setViewNewJobList] = useState(false);
@@ -50,7 +50,7 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
             }
 
             if (type === 'APPLY_DUE') {
-                onClose();
+                toggle();
                 navigate('/main/manage');
             }
         }
@@ -70,6 +70,19 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
         fetchNotiList(false, 'APPLY_DUE');
     }, [fetchNotiList]);
 
+    useEffect(() => {
+        if (!isClose) return;
+        const handleClickOutside = (e: MouseEvent) => {
+            if (dropDownRef.current && !dropDownRef.current.contains(e.target as Node)) {
+                toggle();
+            }
+        };
+        setTimeout(() => document.addEventListener('click', handleClickOutside), 0);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isClose, toggle]);
+
     return (
         <>
             {viewNewJobList ? (
@@ -84,10 +97,14 @@ function NotificationDialog({ onClose }: NotificationDialogProps) {
                 <></>
             )}
 
-            <div className={style.dropdown} ref={dropDownRef}>
+            <div
+                className={`${style.dropdown} ${
+                    notiList_match.length === 0 && notiList_due.length === 0 ? style.hidden : ''
+                }`}
+                ref={dropDownRef}>
                 {!Array.isArray(notiList_match) ||
                 (notiList_match.length === 0 && notiList_due.length === 0) ? (
-                    <LoadingSpinner />
+                    <></>
                 ) : (
                     <ul className={style.notiBox}>
                         {notiList_match.map((item) => (

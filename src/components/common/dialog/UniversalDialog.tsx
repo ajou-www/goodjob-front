@@ -1,4 +1,4 @@
-import style from './UniversalDialog.module.scss';
+import style from './styles/UniversalDialog.module.scss';
 import type feedback from '../../../types/feedback';
 import { useEffect, useRef } from 'react';
 import { Briefcase, Calendar, Clock, ExternalLink, MapPin, X } from 'lucide-react';

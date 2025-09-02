@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import style from './styles/SideBarProfileDialog.module.scss';
+import style from './styles/SideBarProfileButton.module.scss';
 import { User, UserCircle, LogOut, ChevronRight } from 'lucide-react';
 import useAuthStore from '../../../store/authStore';
 import { useNavigate } from 'react-router-dom';
-import AccountDialog from './AccountDialog';
+import AccountDialog from '../dialog/AccountDialog';
 import usePageStore from '../../../store/pageStore';
 
-function SideBarProfileDialog() {
+function SideBarProfileButton() {
     const [hidden, setHidden] = useState(true);
     const [accountHidden, setAccountHidden] = useState(true);
     const { clearTokens, setLogout, withdraw } = useAuthStore();
@@ -105,4 +105,4 @@ function SideBarProfileDialog() {
     );
 }
 
-export default SideBarProfileDialog;
+export default SideBarProfileButton;
