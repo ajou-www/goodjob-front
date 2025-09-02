@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search, ChevronRight, X, ArrowRightToLine, ArrowLeftToLine, Bell } from 'lucide-react';
-import styles from './MainHeader.module.scss';
+import { Search, ChevronRight, X, Bell } from 'lucide-react';
+import style from './MainHeader.module.scss';
 import { debounce } from 'lodash';
-import usePageStore from '../../../store/pageStore';
 import { useNavigate } from 'react-router-dom';
 import type Job from '../../../types/job';
 import UniversalDialog from '../dialog/UniversalDialog';
@@ -12,9 +11,9 @@ import NotificationDialog from '../dialog/NotificationDialog';
 import useNotificationStore from '../../../store/NotificationStore';
 
 const MainHeader = () => {
-    const [searchQuery, setSearchQuery] = useState(''); // 검색어
-    const [searchResults, setSearchResults] = useState<Job[]>([]); // 검색 결과
-    const [isSearching, setIsSearching] = useState(false); // 검색 중
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<Job[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
     const [isFocusing, setIsFocusing] = useState(false);
     const [showSingleSearchResult, setShowSingleSearchResult] = useState(false);
     const [showAlertDropdown, setShowAlertDropdown] = useState(false);
@@ -23,8 +22,6 @@ const MainHeader = () => {
     const alertDropdownRef = useRef<HTMLDivElement>(null);
     const searchContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const setCompactMenu = usePageStore((state) => state.setCompactMenu);
-    const isCompactMenu = usePageStore((state) => state.isCompactMenu);
     const { fetchNotiList } = useNotificationStore();
     const notiList_match = useNotificationStore((state) => state.notiList_match);
     const notiList_due = useNotificationStore((state) => state.notiList_due);
@@ -127,10 +124,6 @@ const MainHeader = () => {
         getSearchHistory();
     };
 
-    const toggleMobileMenu = () => {
-        setCompactMenu(!isCompactMenu);
-    };
-
     const toggleAlertDropdown = () => {
         setShowAlertDropdown(!showAlertDropdown);
     };
@@ -180,17 +173,17 @@ const MainHeader = () => {
             )}
             {isFocusing && (
                 <div
-                    className={styles.header__overlay}
+                    className={style.header__overlay}
                     onClick={() => {
                         setIsFocusing(false);
                     }}
                 />
             )}
 
-            <header className={styles.header}>
-                <div className={styles.header__container}>
-                    <button
-                        className={styles.header__menuButton}
+            <header className={style.header}>
+                <div className={style.header__container}>
+                    {/* <button
+                        className={style.header__menuButton}
                         onClick={toggleMobileMenu}
                         aria-label="메뉴 열기">
                         {isCompactMenu ? (
@@ -198,15 +191,15 @@ const MainHeader = () => {
                         ) : (
                             <ArrowLeftToLine size={30} color="#666666" />
                         )}
-                    </button>
+                    </button> */}
 
                     <div
-                        className={`${styles.header__search} ${
-                            isFocusing ? styles['header__search--extend'] : ''
+                        className={`${style.header__search} ${
+                            isFocusing ? style['header__search--extend'] : ''
                         }`}
                         ref={searchContainerRef}>
-                        <div className={styles.header__searchInputWrapper}>
-                            <Search className={styles.header__searchIcon} size={20} />
+                        <div className={style.header__searchInputWrapper}>
+                            <Search className={style.header__searchIcon} size={20} />
                             <form onSubmit={handleSearchSubmit}>
                                 <input
                                     ref={inputRef}
@@ -215,38 +208,35 @@ const MainHeader = () => {
                                     value={searchQuery}
                                     onChange={handleSearchChange}
                                     onFocus={(e) => {
-                                        // 오직 input 자신이 포커스될 때만 트리거
                                         if (e.target === inputRef.current) {
                                             handleSearchFocus();
                                         }
                                     }}
                                     onBlur={handleSearchBlur}
-                                    className={styles.header__searchInput}
+                                    className={style.header__searchInput}
                                 />
                             </form>
                         </div>
 
-                        {/* 검색 결과 드롭다운 */}
                         {isFocusing && (
-                            <div className={styles.header__searchResults}>
-                                {/* 히스토리: 항상 isFocusing일 때 보여줌 */}
+                            <div className={style.header__searchResults}>
                                 {history && history.length > 0 && (
-                                    <ul className={styles.header__searchResultsList}>
+                                    <ul className={style.header__searchResultsList}>
                                         {history.map((result: string) => (
                                             <li
                                                 key={result}
                                                 onClick={() => handleHistoryClick(result)}
-                                                className={styles.header__searchHistoryItem}>
+                                                className={style.header__searchHistoryItem}>
                                                 <Search
                                                     size={16}
-                                                    className={styles.header__searchResultIcon}
+                                                    className={style.header__searchResultIcon}
                                                 />
-                                                <p className={styles.header__searchResultText}>
+                                                <p className={style.header__searchResultText}>
                                                     {result}
                                                 </p>
                                                 <X
                                                     size={18}
-                                                    className={styles.header__searchHistoryDelete}
+                                                    className={style.header__searchHistoryDelete}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         deleteSearchHistory(result);
@@ -256,24 +246,24 @@ const MainHeader = () => {
                                         ))}
                                     </ul>
                                 )}
-                                {/* 검색 결과 */}
+
                                 {isSearching ? (
-                                    <div className={styles.header__searchLoading}>검색 중...</div>
+                                    <div className={style.header__searchLoading}>검색 중...</div>
                                 ) : searchResults.length > 0 ? (
                                     <>
-                                        <ul className={styles.header__searchResultsList}>
+                                        <ul className={style.header__searchResultsList}>
                                             {searchResults.map((result: Job) => (
                                                 <li
                                                     key={result.id}
                                                     onClick={() => handleResultClick(result)}
-                                                    className={styles.header__searchResultItem}>
+                                                    className={style.header__searchResultItem}>
                                                     <div
                                                         className={
-                                                            styles.header__searchResultContent
+                                                            style.header__searchResultContent
                                                         }>
                                                         <div
                                                             className={
-                                                                styles.header__searchResultIcon
+                                                                style.header__searchResultIcon
                                                             }>
                                                             <img
                                                                 rel="icon"
@@ -286,14 +276,14 @@ const MainHeader = () => {
                                             ))}
                                         </ul>
                                         <button
-                                            className={styles.header__viewMoreButton}
+                                            className={style.header__viewMoreButton}
                                             onClick={handleViewMoreResults}>
                                             검색 결과 더 보기
                                             <ChevronRight size={16} />
                                         </button>
                                     </>
                                 ) : searchQuery.length > 1 ? (
-                                    <div className={styles.header__searchNoResults}>
+                                    <div className={style.header__searchNoResults}>
                                         검색 결과가 없습니다.
                                     </div>
                                 ) : null}
@@ -301,16 +291,10 @@ const MainHeader = () => {
                         )}
                     </div>
                 </div>
-                <div className={styles.header__actions}>
+                <div className={style.header__actions}>
                     <>
-                        {/* <button
-                                className={styles.header__actionButton}
-                                aria-label="다크모드"
-                                onClick={toggleDarkmode}>
-                                <Moon size={24} color="#666666" />
-                            </button> */}
                         <button
-                            className={styles.header__actionButton}
+                            className={style.header__actionButton}
                             aria-label="알림"
                             onClick={(e) => {
                                 toggleAlertDropdown();
@@ -327,7 +311,7 @@ const MainHeader = () => {
                             </li>
                         </button>
                         {showAlertDropdown ? (
-                            <div className={styles.alertDropdownWrapper} ref={alertDropdownRef}>
+                            <div className={style.alertDropdownWrapper} ref={alertDropdownRef}>
                                 <NotificationDialog onClose={toggleAlertDropdown} />
                             </div>
                         ) : (
