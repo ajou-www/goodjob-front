@@ -7,6 +7,23 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
+const refreshClient = axios.create({
+    baseURL: `${SERVER_IP}`,
+    withCredentials: true,
+});
+
+let isRefreshing = false;
+let refreshSubscribers: Array<(token: string | null, error?: unknown) => void> = [];
+
+const subscribeTokenRefresh = (cb: (token: string | null, error?: unknown) => void) => {
+    refreshSubscribers.push(cb);
+};
+
+const notifySubscribers = (token: string | null, error?: unknown) => {
+    refreshSubscribers.forEach((cb) => cb(token, error));
+    refreshSubscribers = [];
+};
+
 axiosInstance.interceptors.request.use(
     (config) => {
         const { accessToken } = useAuthStore.getState();
@@ -21,21 +38,53 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const originalRequest = error.config;
+        const originalRequest = error.config || {};
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        const status = error.response?.status;
+        const url: string = originalRequest.url || '';
+        const alreadyRetried = Boolean(originalRequest._retry);
+
+        if (status === 401 && !url.includes('/auth/token/refresh') && !alreadyRetried) {
             originalRequest._retry = true;
+
+            if (isRefreshing) {
+                return new Promise((resolve, reject) => {
+                    subscribeTokenRefresh((token, err) => {
+                        if (err || !token) {
+                            reject(err || new Error('Token refresh failed'));
+                            return;
+                        }
+                        originalRequest.headers = originalRequest.headers || {};
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                        resolve(axiosInstance(originalRequest));
+                    });
+                });
+            }
+
+            isRefreshing = true;
             try {
-                const res = await axiosInstance.post(
+                const res = await refreshClient.post(
                     '/auth/token/refresh',
                     {},
                     { withCredentials: true }
                 );
-                const { accessToken } = res.data;
+                const { accessToken } = res.data || {};
+
+                if (!accessToken) {
+                    throw new Error('No accessToken from refresh');
+                }
+
                 useAuthStore.getState().setTokens(accessToken);
+                notifySubscribers(accessToken);
+
+                isRefreshing = false;
+
+                originalRequest.headers = originalRequest.headers || {};
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
+                notifySubscribers(null, refreshError);
+                isRefreshing = false;
                 useAuthStore.getState().clearTokens();
                 window.location.href = '/signIn';
                 return Promise.reject(refreshError);
