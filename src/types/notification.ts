@@ -17,6 +17,7 @@ export interface notification {
     dedupeKey: string;
     status: string;
     sentAt: string;
+    cvId: number;
     jobs: NotificationJobItem[];
     titleCode: string;
     params: { threshold: number; topN: number };

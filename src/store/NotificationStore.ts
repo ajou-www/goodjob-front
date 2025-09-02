@@ -4,6 +4,10 @@ import useAuthStore from './authStore';
 import Job from '../types/job';
 import { notification, NotificationJobItem } from '../types/notification';
 
+interface NotificationJobItems {
+    props: NotificationJobItem[];
+    cvId: number;
+}
 interface NotificationStore {
     notiList_match: notification[];
     notiList_due: notification[];
@@ -12,7 +16,7 @@ interface NotificationStore {
     fetchRead: (notiId: number) => Promise<number>;
     getnotiJobList: (unreadOnly: boolean, type: string) => void;
     fetchNotiList: (unreadOnly: boolean, type: string) => void;
-    fetchNotiJobList: (notis: NotificationJobItem[] | null) => void;
+    fetchNotiJobList: (notis: NotificationJobItems | null) => void;
     deleteNoti: (id: number) => Promise<number>;
 }
 
@@ -74,19 +78,23 @@ const useNotificationStore = create<NotificationStore>()((set) => ({
         const accessToken = useAuthStore.getState().accessToken;
         const jobIds: number[] = [];
 
-        if (notis) {
-            notis.forEach((item: { jobId: number }) => {
+        if (notis && Array.isArray(notis.props)) {
+            notis.props.forEach((item: NotificationJobItem) => {
                 if (typeof item.jobId === 'number') jobIds.push(item.jobId);
             });
         }
 
+        // 수정 cvId 추가하기
         if (jobIds.length > 0) {
-            const res = await axiosInstance.get(`/jobs/_batch?ids=${jobIds.join(',')}`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                withCredentials: true,
-            });
+            const res = await axiosInstance.get(
+                `/jobs/_batch?ids=${jobIds.join(',')}&cvId=${notis?.cvId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    withCredentials: true,
+                }
+            );
 
             if (res.status === 200) {
                 set({ notiJobList: res.data });

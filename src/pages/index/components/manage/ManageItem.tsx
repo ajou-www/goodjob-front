@@ -56,10 +56,8 @@ function ManageItem({
         }
     };
 
-    // 외부 클릭 감지
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            // 상태 드롭다운 외부 클릭
             if (
                 statusDropdownRef.current &&
                 !statusDropdownRef.current.contains(event.target as Node)
@@ -67,7 +65,6 @@ function ManageItem({
                 setShowStatusDropdown(false);
             }
 
-            // 액션 메뉴 외부 클릭
             if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
                 setShowActions(false);
             }
@@ -79,18 +76,16 @@ function ManageItem({
         };
     }, []);
 
-    // 편집 모드 활성화 시 자동 포커스
     useEffect(() => {
         if (isEditingNote && noteInputRef.current) {
             noteInputRef.current.focus();
         }
     }, [isEditingNote]);
 
-    // 상태 옵션 드롭다운 위치 계산
     useEffect(() => {
         if (showStatusDropdown && statusDropdownRef.current) {
             const rect = statusDropdownRef.current.getBoundingClientRect();
-            const dropdownHeight = 40 + statusOptions.length * 36; // 대략적인 높이(옵션당 36px)
+            const dropdownHeight = 40 + statusOptions.length * 36;
             if (rect.bottom + dropdownHeight > window.innerHeight) {
                 setDropUp(true);
             } else {
