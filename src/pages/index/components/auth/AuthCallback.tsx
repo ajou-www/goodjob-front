@@ -22,11 +22,11 @@ function AuthCallback() {
                 console.log(res.data);
                 const { accessToken, firstLogin } = res.data;
 
-                if (!accessToken) {
-                    console.error('Access token이 없습니다');
-                    navigate('/signIn');
-                    return;
-                }
+                // if (!accessToken) {
+                //     console.error('Access token이 없습니다');
+                //     navigate('/signIn');
+                //     return;
+                // }
 
                 setTokens(accessToken);
                 setIsLoggedIn(true);
