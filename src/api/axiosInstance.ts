@@ -26,7 +26,11 @@ axiosInstance.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                const res = await axiosInstance.get('/auth/token/refresh');
+                const res = await axiosInstance.post(
+                    '/auth/token/refresh',
+                    {},
+                    { withCredentials: true }
+                );
                 const { accessToken } = res.data;
                 useAuthStore.getState().setTokens(accessToken);
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
