@@ -57,71 +57,68 @@ const useFileStore = create<fileStore>((set) => ({
         }
     },
     uploadFile: async (file: File | null, url: string, fileName: string) => {
-        if (!file) {
-            console.log('파일이 비어있습니다');
-            return;
+    if (!file) {
+        console.log('파일이 비어있습니다');
+        return;
+    }
+    try {
+        // 1) S3 업로드: presigned URL에 헤더 없이 파일 그대로 PUT
+        const putRes = await fetch(url, { method: 'PUT', body: file });
+        if (!putRes.ok) {
+        const xml = await putRes.text(); // S3 XML 에러 메시지 확인용
+        console.error('S3 PUT failed', putRes.status, xml);
+        throw new Error(`S3 PUT failed: ${putRes.status}`);
         }
-        try {
-            const res = await axiosInstance.put(url, file, {
-                // S3에 파일 업로드
-                headers: { 'Content-Type': file.type },
-            });
 
-            if (res.status === 200) {
-                const accessToken = useAuthStore.getState().accessToken;
-
-                const confirm = await axiosInstance.post(
-                    `/s3/confirm-upload?fileName=${fileName}`,
-                    null,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                        withCredentials: true,
-                    }
-                );
-
-                console.log(confirm.status);
-                return confirm.status;
-            }
-        } catch (error) {
-            console.log(error);
-            throw error;
+        // 2) 성공 시에만 confirm 호출 (axiosInstance 사용 OK)
+        const accessToken = useAuthStore.getState().accessToken;
+        const confirm = await axiosInstance.post(
+        `/s3/confirm-upload?fileName=${fileName}`,
+        null,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            withCredentials: true,
         }
+        );
+        return confirm.status;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
     },
+
     reUploadFile: async (file: File | null, url: string) => {
-        if (!file) {
-            console.log('파일이 비어있습니다');
-            return;
+    if (!file) {
+        console.log('파일이 비어있습니다');
+        return;
+    }
+    try {
+        // 1) S3 업로드: 헤더 없이 PUT
+        const putRes = await fetch(url, { method: 'PUT', body: file });
+        if (!putRes.ok) {
+        const xml = await putRes.text();
+        console.error('S3 PUT failed', putRes.status, xml);
+        throw new Error(`S3 PUT failed: ${putRes.status}`);
         }
-        try {
-            const res = await axiosInstance.put(url, file, {
-                headers: { 'Content-Type': file.type },
-            });
 
-            if (res.status === 200) {
-                const accessToken = useAuthStore.getState().accessToken;
-                const userEmail = useUserStore.getState().email;
-                const userId = useUserStore.getState().id;
-                const fileName = userEmail.split('@')[0];
+        // 2) 성공 시 confirm-re-upload
+        const accessToken = useAuthStore.getState().accessToken;
+        const userEmail = useUserStore.getState().email;
+        const userId = useUserStore.getState().id;
+        const fileName = userEmail.split('@')[0];
 
-                const confirm = await axiosInstance.post(
-                    `/s3/confirm-re-upload?fileName=${fileName}_${userId}`,
-                    null,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                        withCredentials: true,
-                    }
-                );
-
-                console.log(confirm);
-            }
-        } catch (error) {
-            console.log(error);
-            throw error;
+        await axiosInstance.post(
+        `/s3/confirm-re-upload?fileName=${fileName}_${userId}`,
+        null,
+        {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            withCredentials: true,
         }
+        );
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
     },
 }));
 
