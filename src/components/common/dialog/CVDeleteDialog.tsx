@@ -56,14 +56,10 @@ function CVDeleteDialog({ isOpen, onClose, cvId, deleteAll }: CVDeleteDialogProp
             if (cvId) {
                 const res = await removeFile(cvId);
                 if (res === 200) {
-                    setCVAction((prev) => !prev);
-                    setHasFile(false);
+                    await getSelectedCvId();
                     getUserCvList();
                     onClose();
                     setIsDeleting(false);
-                    console.log('CV delete Success!!!');
-                    getUserCvList();
-                    await getSelectedCvId();
                 } else {
                     console.log('CV delete Error!!!');
                 }

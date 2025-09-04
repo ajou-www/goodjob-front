@@ -9,7 +9,7 @@ import useRecommendationStore from '../../../../store/recommendationCacheStore';
 interface CvItemProps {
     cv: CvMe;
     onView: (fileName: string) => void;
-    onRename: (cv: CvMe, newName: string) => void; // newName 파라미터 추가
+    onRename: (cv: CvMe, newName: string) => void;
     isViewingThis: boolean;
     isLoadingThis: boolean;
 }
@@ -31,7 +31,7 @@ function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemPr
     }, [isRenaming]);
 
     const startRename = (e: React.MouseEvent) => {
-        e.stopPropagation(); // 이벤트 버블링 방지
+        e.stopPropagation();
         setIsRenaming(true);
         setNewFileName(cv.fileName || '');
     };
@@ -45,21 +45,20 @@ function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemPr
     useEffect(() => {}, [selctedCvId]);
 
     const handleConfirmRename = (e: React.MouseEvent | React.KeyboardEvent) => {
-        e.stopPropagation(); // 이벤트 버블링 방지
+        e.stopPropagation();
         const trimmedNewName = newFileName.trim();
         if (trimmedNewName === '' || trimmedNewName === cv.fileName) {
-            // 이름이 비어있거나 변경되지 않았으면 취소
             setIsRenaming(false);
             return;
         }
-        onRename(cv, trimmedNewName); // 부모 컴포넌트로 cv 객체와 새 이름 전달
+        onRename(cv, trimmedNewName);
         setIsRenaming(false);
     };
 
     const handleCancelRename = (e?: React.MouseEvent | React.KeyboardEvent) => {
-        e?.stopPropagation(); // 이벤트 버블링 방지
+        e?.stopPropagation();
         setIsRenaming(false);
-        setNewFileName(cv.fileName || ''); // 원래 이름으로 복원
+        setNewFileName(cv.fileName || '');
     };
 
     const handleDeleteCV = async (e: React.MouseEvent) => {
@@ -123,7 +122,7 @@ function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemPr
                                     {cv.fileName || '이름 없는 CV'}
                                 </h2>
                             )}
-                            {!isRenaming && ( // 이름 변경 중이 아닐 때만 업로드 날짜 표시
+                            {!isRenaming && (
                                 <p className={style.cvCard__header__subTitle}>
                                     업로드 일자:{' '}
                                     {cv.uploadedAt
@@ -173,7 +172,7 @@ function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemPr
                                 <button
                                     className={`${style.actionButton} ${style.renameButton}`}
                                     onClick={startRename}
-                                    disabled={isRenaming} // 이름 변경 중에는 이름 변경 버튼 비활성화
+                                    disabled={isRenaming}
                                     title="CV 이름 변경">
                                     <Edit3 size={18} />
                                 </button>
@@ -185,7 +184,7 @@ function CvItem({ cv, onView, onRename, isViewingThis, isLoadingThis }: CvItemPr
                                 <button
                                     className={`${style.actionButton} ${style.deleteButton}`}
                                     onClick={handleDeleteCV}
-                                    disabled={isRenaming} // 이름 변경 중에는 삭제 버튼 비활성화
+                                    disabled={isRenaming}
                                     title="CV 삭제">
                                     <Trash2 size={18} />
                                 </button>

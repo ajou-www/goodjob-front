@@ -67,8 +67,9 @@ function MyCv() {
                 setIsSummaryLoading(false);
             }
         };
+        setHasError(false);
         fetchCVSummary();
-    }, [hasFile, userCvList, selectedCVId, action, getSummary]);
+    }, [hasFile, userCvList, selectedCVId, action]);
 
     useEffect(() => {
         if (hasError) {
