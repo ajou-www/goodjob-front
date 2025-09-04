@@ -7,6 +7,7 @@ interface AuthStore {
     isLoggedIn: boolean;
     setIsLoggedIn: (isLoggedIn: boolean) => void;
     setLogout: (accessToken: string | null) => Promise<void>;
+    setForceLogout: () => void;
     setTokens: (accessToken: string | null) => void;
     clearTokens: () => void;
     fetchAuthData: () => Promise<void>;
@@ -36,6 +37,13 @@ const useAuthStore = create<AuthStore>()(
                     localStorage.removeItem('page-storage');
                     localStorage.removeItem('user-token');
                 }
+            },
+            setForceLogout: () => {
+                set({ accessToken: null, isLoggedIn: false });
+                localStorage.removeItem('admin-job-storage');
+                localStorage.removeItem('admin-storage');
+                localStorage.removeItem('page-storage');
+                localStorage.removeItem('user-token');
             },
             withdraw: async (accessToken) => {
                 try {

@@ -85,7 +85,7 @@ axiosInstance.interceptors.response.use(
             } catch (refreshError) {
                 notifySubscribers(null, refreshError);
                 isRefreshing = false;
-                useAuthStore.getState().clearTokens();
+                useAuthStore.getState().setForceLogout();
                 window.location.href = '/signIn';
                 return Promise.reject(refreshError);
             }
