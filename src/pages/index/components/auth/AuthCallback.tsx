@@ -22,12 +22,6 @@ function AuthCallback() {
                 console.log(res.data);
                 const { accessToken, firstLogin } = res.data;
 
-                // if (!accessToken) {
-                //     console.error('Access token이 없습니다');
-                //     navigate('/signIn');
-                //     return;
-                // }
-
                 setTokens(accessToken);
                 setIsLoggedIn(true);
                 const isAdmin = await fetchUserData(accessToken);
@@ -57,6 +51,7 @@ function AuthCallback() {
             })
             .catch((err) => {
                 console.error('콜백 처리 중 오류', err);
+                // 에러 처리는 axiosInstance에서 처리
                 // navigate('/signIn', { replace: true });
             });
     }, [navigate, setTokens]);

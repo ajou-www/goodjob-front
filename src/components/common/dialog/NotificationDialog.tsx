@@ -49,6 +49,7 @@ function NotificationDialog({ toggle, isClose }: NotificationDialogProps) {
             readResult = await fetchRead(id);
         }
         if (isRead || readResult === 200) {
+            console.log(type); // TEST
             if (type === 'CV_MATCH') {
                 fetchNotiList(false, 'CV_MATCH');
                 setNotificationProps({ props: jobs ?? [], cvId });

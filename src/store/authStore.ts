@@ -22,9 +22,7 @@ const useAuthStore = create<AuthStore>()(
             setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
             setTokens: (accessToken) => set({ accessToken, isLoggedIn: !!accessToken }),
             clearTokens: () => set({ accessToken: null, isLoggedIn: false }),
-            fetchAuthData: async () => {
-                // 필요시 axiosInstance로 구현
-            },
+            fetchAuthData: async () => {},
             setLogout: async (accessToken) => {
                 const res = await axiosInstance.post('/auth/logout', null, {
                     headers: { Authorization: `Bearer ${accessToken}` },

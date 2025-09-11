@@ -6,7 +6,7 @@ import { CvMe } from './cvStore';
 
 interface RecommendationState {
     selectedCVId: number | null;
-    recommendationsCache: Record<number, Job[]>; // key: CV ID, value: 추천 리스트
+    recommendationsCache: Record<number, Job[]>; // key: cvId, value: 추천 리스트
     setSelectedCVId: (cvId: number) => void;
     setRecommendations: (cvId: number, data: Job[]) => void;
     getSelectedCVId: () => Promise<number>;

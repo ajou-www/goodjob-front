@@ -18,7 +18,7 @@ import CVSummaryDialog from '../../../../components/common/dialog/CVSummaryDialo
 import useRecommendationStore from '../../../../store/recommendationCacheStore';
 
 function MyCv() {
-    const { getSummary } = useFileStore();
+    const { getSummary, setSummaryCache } = useFileStore();
     const [hasError, setHasError] = useState(false);
     // 로딩
     const [isSummaryLoading, setIsSummaryLoading] = useState(false);
@@ -29,6 +29,7 @@ function MyCv() {
     const [summaryDialogHidden, setSummaryDialogHidden] = useState(false);
     const hasFile = useFileStore((state) => state.hasFile);
     const summaryText = useFileStore((state) => state.summary);
+    const summaryCache = useFileStore((state) => state.summaryCache);
     const userCvList = useCvStore((state) => state.userCvList);
     const selectedCVId = useRecommendationStore((state) => state.selectedCVId);
     const getSelectedCVId = useRecommendationStore((state) => state.getSelectedCVId);
@@ -55,10 +56,14 @@ function MyCv() {
         const fetchCVSummary = async () => {
             try {
                 setIsSummaryLoading(true);
-                if (selectedCVId !== null) {
-                    await getSummary(selectedCVId);
-                } else {
-                    getSelectedCVId();
+                console.log(summaryCache[selectedCVId ?? 0]);
+                if (!summaryCache[selectedCVId ?? 0]) {
+                    if (selectedCVId) {
+                        await getSummary(selectedCVId);
+                        setSummaryCache(selectedCVId, summaryText ?? '');
+                    } else {
+                        getSelectedCVId();
+                    }
                 }
             } catch (error) {
                 console.error('데이터 가져오기 에러:', error);
@@ -69,7 +74,17 @@ function MyCv() {
         };
         setHasError(false);
         fetchCVSummary();
-    }, [hasFile, userCvList, selectedCVId, action]);
+    }, [
+        hasFile,
+        userCvList,
+        selectedCVId,
+        action,
+        getSummary,
+        setSummaryCache,
+        summaryCache,
+        summaryText,
+        getSelectedCVId,
+    ]);
 
     useEffect(() => {
         if (hasError) {
@@ -124,7 +139,9 @@ function MyCv() {
                                             <div
                                                 className={style.feedbackText}
                                                 dangerouslySetInnerHTML={{
-                                                    __html: parseMarkdown(summaryText ?? ''),
+                                                    __html: parseMarkdown(
+                                                        summaryCache[selectedCVId ?? 0] ?? ''
+                                                    ),
                                                 }}></div>
                                         </Suspense>
                                     )}

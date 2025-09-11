@@ -148,8 +148,8 @@ function JobList() {
         try {
             if (selectedCVId !== null) {
                 if (recommendationsCache[selectedCVId]) {
+                    // 캐시 사용
                     setJobList(recommendationsCache[selectedCVId]);
-                    console.log('API 호출 최적화!!');
                 } else {
                     setIsLoading(true);
                     const jobList = await getJobList(TOTAL_JOB, selectedCVId);
@@ -160,7 +160,7 @@ function JobList() {
                 getSelectedCVId();
             }
             await getBookmark();
-            // setIsLoading(false);
+            // setIsLoading(false); // 처리
             setIsJobListLoad(true);
             pollingActiveRef.current = false;
             setHasError(false);
@@ -172,30 +172,30 @@ function JobList() {
     };
 
     useEffect(() => {
-        let pollingInterval: NodeJS.Timeout;
-        let timeoutHandle: NodeJS.Timeout;
+        let pollingInterval: ReturnType<typeof setInterval> | undefined;
+        let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
         pollingActiveRef.current = true;
 
-        const startPolling = async () => {
+        const poll = async () => {
             await fetchData();
-            pollingInterval = setInterval(() => {
+            pollingInterval = setInterval(async () => {
                 if (pollingActiveRef.current) {
-                    fetchData();
+                    await fetchData();
                 }
             }, 10000);
         };
 
-        startPolling();
+        poll();
 
         // eslint-disable-next-line prefer-const
         timeoutHandle = setTimeout(() => {
             pollingActiveRef.current = false;
-            clearInterval(pollingInterval);
+            if (pollingInterval) clearInterval(pollingInterval);
         }, 80000);
 
         return () => {
-            clearInterval(pollingInterval);
-            clearTimeout(timeoutHandle);
+            if (pollingInterval) clearInterval(pollingInterval);
+            if (timeoutHandle) clearTimeout(timeoutHandle);
             pollingActiveRef.current = false;
         };
     }, [selectedCVId]);

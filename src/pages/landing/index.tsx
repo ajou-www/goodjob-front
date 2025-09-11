@@ -8,18 +8,6 @@ import useUserStore from '../../store/userStore';
 function Index() {
     const { fetchUserData } = useUserStore();
     const navigate = useNavigate();
-    // const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
-
-    // useEffect(() => {
-    //     const isMobile = window.matchMedia('only screen and (max-width: 768px)').matches;
-
-    //     // 예외 페이지를 정의하거나 조건 설정
-    //     const isException = location.pathname === '/mobile';
-
-    //     if (isMobile && !isException) {
-    //         navigate('/mobile');
-    //     }
-    // }, [location.pathname]);
 
     const handleMoveToMainPage = async () => {
         try {

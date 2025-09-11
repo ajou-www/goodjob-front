@@ -8,6 +8,9 @@ interface fileStore {
     file: File | null;
     hasFile: boolean;
     summary: string | null;
+    summaryCache: Record<number, string>;
+    setSummaryCache: (cvId: number, summaryText: string) => void;
+    setSummary: (summaryText: string) => void;
     setFile: (file: File | null) => void;
     setHasFile: (exists: boolean) => void;
     removeFile: (cvId: number) => Promise<number>;
@@ -21,6 +24,16 @@ const useFileStore = create<fileStore>((set) => ({
     file: null,
     summary: null,
     hasFile: false,
+    summaryCache: {},
+    setSummaryCache: (cvId, summaryText) => {
+        set((state) => ({
+            summaryCache: {
+                ...state.summaryCache,
+                [cvId]: summaryText,
+            },
+        }));
+    },
+    setSummary: (summaryText) => set({ summary: summaryText }),
     setFile: (file: File | null) => set({ file }),
     setHasFile: (exists) => set({ hasFile: exists }),
     removeFile: async (cvId) => {
