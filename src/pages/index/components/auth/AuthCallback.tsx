@@ -57,7 +57,7 @@ function AuthCallback() {
             })
             .catch((err) => {
                 console.error('콜백 처리 중 오류', err);
-                navigate('/signIn', { replace: true });
+                // navigate('/signIn', { replace: true });
             });
     }, [navigate, setTokens]);
 

@@ -31,8 +31,6 @@ function Index() {
             }
         } catch (error) {
             console.log('회원 검증 중 에러 발생: ', error);
-            navigate('./signIn');
-            return;
         }
     };
 
