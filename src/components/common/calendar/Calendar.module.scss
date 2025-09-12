@@ -1,6 +1,5 @@
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-/* Calendar.module.scss */
 :global {
     .rbc-event {
         background-color: #1877f2;
@@ -104,7 +103,6 @@
     }
 }
 
-// 부드러운 페이드 인 애니메이션
 @keyframes fadeIn {
     from {
         opacity: 0;

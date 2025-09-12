@@ -76,16 +76,6 @@ function SideBarProfileButton() {
                             계정
                             <ChevronRight size={16} className={style.menuArrow} />
                         </li>
-                        {/* <li>
-                            <Settings size={18} className={style.menuIcon} />
-                            설정
-                            <ChevronRight size={16} className={style.menuArrow} />
-                        </li>
-                        <li>
-                            <HelpCircle size={18} className={style.menuIcon} />
-                            도움말
-                            <ChevronRight size={16} className={style.menuArrow} />
-                        </li> */}
                     </ul>
 
                     <span className={style.divider}></span>

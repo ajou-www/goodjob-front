@@ -15,7 +15,6 @@ function CVReuploadDialog({ isOpen, onClose }: CVReuploadDialog) {
             onClose();
         }
     };
-    // const handleButtonClick = () => {};
 
     useEffect(() => {
         if (isOpen) {

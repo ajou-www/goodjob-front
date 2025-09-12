@@ -51,8 +51,6 @@ function AuthCallback() {
             })
             .catch((err) => {
                 console.error('콜백 처리 중 오류', err);
-                // 에러 처리는 axiosInstance에서 처리
-                // navigate('/signIn', { replace: true });
             });
     }, [navigate, setTokens]);
 

@@ -1,5 +1,3 @@
-// "use client"
-
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +20,6 @@ function ErrorFallback({
     const [countdown, setCountdown] = useState(15);
     const [isCountingDown, setIsCountingDown] = useState(false);
 
-    // 자동 새로고침 카운트다운
     useEffect(() => {
         if (isCountingDown && countdown > 0) {
             const timer = setTimeout(() => {

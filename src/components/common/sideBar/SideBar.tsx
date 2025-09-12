@@ -13,9 +13,9 @@ import usePageStore from '../../../store/pageStore';
 import style from './SideBar.module.scss';
 import useUserStore from '../../../store/userStore';
 import SideBarProfileButton from '../buttons/SideBarProfileButton';
-import { useEffect, useState } from 'react'; // useState 추가
+import { useEffect, useState } from 'react';
 import useAuthStore from '../../../store/authStore';
-import PricingDialog from '../pricing/PricingDialog'; // PricingDialog import 추가
+import PricingDialog from '../pricing/PricingDialog';
 
 function SideBar() {
     const { name, email, fetchUserData } = useUserStore();
@@ -193,7 +193,6 @@ function SideBar() {
                     </div>
                 </div>
             </div>
-            {/* TODO: 추후 유저 플랜에 따라 UI 조정 가능 */}
             {userPlan === '스타터' ? (
                 <PricingDialog
                     isOpen={isPricingDialogOpen}

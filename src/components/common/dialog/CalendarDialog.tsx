@@ -1,7 +1,7 @@
 import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import style from './styles/CalendarDialog.module.scss';
 import buttonStyle from '../buttons/styles/CloseButton.module.scss';
-import 'react-calendar/dist/Calendar.css';
 import { useCallback, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import moment from 'moment';

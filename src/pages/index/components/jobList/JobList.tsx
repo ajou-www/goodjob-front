@@ -148,7 +148,7 @@ function JobList() {
         try {
             if (selectedCVId !== null) {
                 if (recommendationsCache[selectedCVId]) {
-                    // 캐시 사용
+                    // 캐시 사용시에는 로딩 상태를 설정하지 않음
                     setJobList(recommendationsCache[selectedCVId]);
                 } else {
                     setIsLoading(true);

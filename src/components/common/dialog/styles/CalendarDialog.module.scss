@@ -13,6 +13,14 @@
     backdrop-filter: blur(4px);
 }
 
+.modal :global(.react-calendar) {
+    width: 500px;
+    background: transparent;
+    border: none;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    line-height: 1.125em;
+}
+
 .modal {
     display: flex;
     flex-direction: column;
