@@ -3,7 +3,6 @@
     grid-template-columns: 3fr 1.55fr 1.45fr 2.5fr 1fr 0.5fr;
     gap: 1rem;
     padding: 0.75rem 1rem;
-    // border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -12,7 +11,7 @@
 
     &__cell {
         display: flex;
-        max-width: 16rem;
+        max-width: 200px;
         align-items: center;
         position: relative;
     }
@@ -41,7 +40,7 @@
         border-radius: 4px;
         transition: all 0.2s ease;
         min-height: 1.8rem;
-        width: 60%;
+        width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -58,8 +57,10 @@
 
     &__editField {
         display: flex;
+        flex-direction: column;
         width: 100%;
         gap: 0.5rem;
+        overflow: hidden;
     }
 
     &__input,
@@ -85,7 +86,7 @@
 
     &__editActions {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         gap: 0.25rem;
     }
 
@@ -93,7 +94,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 24px;
+        width: 50%;
         height: 24px;
         border-radius: 4px;
         border: none;
@@ -119,10 +120,6 @@
 
     &__statusContainer {
         position: relative;
-
-        // @media (max-width: 460px) {
-        //     position: unset;
-        // }
     }
 
     &__status {
@@ -216,7 +213,6 @@
 
     &__actionsMenu {
         position: absolute;
-        // top: calc(100% + 5px);
         right: 0;
         width: 150px;
         background-color: white;

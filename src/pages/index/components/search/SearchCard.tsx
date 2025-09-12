@@ -90,9 +90,6 @@ function SearchCard({ job, onToggleBookmark, isSelected }: SearchCardProp) {
                                 {job.regions[0].sido ?? ''} {job.regions[0].sigungu ?? ''}
                             </p>
                         )}
-                        {/* {job.regionText && (
-                            <p className={style.jobCard__location}>{job.regionText}</p>
-                        )} */}
                     </div>
                 </div>
             </div>

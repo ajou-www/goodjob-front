@@ -25,19 +25,11 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     animation: slideUp 0.4s ease;
     padding: 1.5rem;
+    margin: 1rem;
     overflow-y: scroll;
 
     &::-webkit-scrollbar {
         width: 0px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: #d8edff;
-        border-radius: 4px;
     }
 }
 
@@ -50,7 +42,6 @@
 }
 
 .closeButton {
-    // display: flex;
     align-items: center;
     justify-content: center;
     width: 40px;
@@ -122,19 +113,6 @@
     overflow-y: scroll;
     background-color: #ffffff;
     border-radius: 12px;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: #d8edff;
-        border-radius: 4px;
-    }
 }
 
 .placeholder {
@@ -327,156 +305,6 @@
         width: 100%;
         display: block;
     }
-}
-
-// 스켈레톤 UI 스타일
-.skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 4px;
-
-    // 회사 로고 스켈레톤
-    &.header__logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        flex-shrink: 0;
-    }
-
-    // 회사 이름 스켈레톤
-    &.header__companyName {
-        width: 150px;
-        height: 1.5rem;
-        margin-right: 0.75rem;
-    }
-
-    // 액션 버튼 스켈레톤
-    &.header__actionButton {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-    }
-
-    // 제목 스켈레톤
-    &.title {
-        height: 2.5rem;
-        width: 90%;
-        margin-bottom: 1.5rem;
-    }
-
-    // 메타 정보 스켈레톤
-    &.metaInfo__item {
-        width: 150px;
-        height: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    // 점수 스켈레톤
-    &.score {
-        width: 120px;
-        height: 2rem;
-        border-radius: 20px;
-    }
-
-    // 버튼 스켈레톤
-    &.actionButtons__apply {
-        height: 3rem;
-        flex: 2;
-        border-radius: 8px;
-    }
-
-    &.actionButtons__feedback,
-    &.actionButtons__manage {
-        height: 3rem;
-        flex: 1;
-        border-radius: 8px;
-    }
-
-    // 섹션 제목 스켈레톤
-    &.section__title {
-        height: 1.5rem;
-        width: 200px;
-        margin-bottom: 1.5rem;
-    }
-
-    // 섹션 텍스트 스켈레톤
-    &.section__text {
-        height: 120px;
-        width: 100%;
-        margin-bottom: 2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-
-        &::before {
-            content: '';
-            display: block;
-            height: 1rem;
-            width: 100%;
-            background: inherit;
-            border-radius: 4px;
-        }
-
-        &::after {
-            content: '';
-            display: block;
-            height: 1rem;
-            width: 90%;
-            background: inherit;
-            border-radius: 4px;
-        }
-    }
-
-    // 일반 텍스트 스켈레톤
-    &__text {
-        height: 1.2rem;
-        width: 100%;
-        max-width: 200px;
-    }
-
-    // 제목 스켈레톤
-    &__title {
-        height: 2.5rem;
-        width: 80%;
-        margin-bottom: 1.5rem;
-    }
-
-    // 단락 스켈레톤
-    &__paragraph {
-        height: 120px;
-        width: 100%;
-        margin-bottom: 2rem;
-        position: relative;
-
-        &::before,
-        &::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            height: 1rem;
-            background: inherit;
-            border-radius: 4px;
-        }
-
-        &::before {
-            top: 0;
-            width: 100%;
-        }
-
-        &::after {
-            top: 1.5rem;
-            width: 90%;
-        }
-    }
-}
-
-// 스켈레톤 UI 컨테이너 스타일 추가
-.skeletonContainer {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 @keyframes shimmer {

@@ -61,7 +61,7 @@ function SearchPage() {
         async function fetchSearchList() {
             try {
                 setIsLoading(true);
-                await getSearchList(query, currentPage, 24); // 0 페이지가 1페이지, 백에서 페이징까지 담당
+                await getSearchList(query, currentPage, 24);
                 setIsLoading(false);
             } catch (error) {
                 console.error('검색 결과 가져오기 오류: ', error);

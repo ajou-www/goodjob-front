@@ -7,6 +7,10 @@
     background-color: #ffffff;
     border-radius: 20px;
     overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        width: 0px;
+    }
 }
 
 .header {
@@ -44,22 +48,6 @@
     align-content: start;
 
     padding: 0.5rem 0.25rem;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: #d8edff;
-        border-radius: 4px;
-    }
-    /* Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: #d8edff #f1f1f1;
 }
 
 .loading {

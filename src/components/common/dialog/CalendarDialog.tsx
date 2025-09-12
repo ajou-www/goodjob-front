@@ -43,7 +43,9 @@ function CalendarDialog({ toggle, onSelectDate, title }: CalendarDialogProps) {
             <div className={style.modal} ref={calenderRef}>
                 <div className={style.modal__header}>
                     <h2 className={style.modal__header__title}>{title}</h2>
-                    <X className={buttonStyle.closeButton} size={20} onClick={toggle} />
+                    <button className={buttonStyle.closeButton} onClick={toggle}>
+                        <X size={24} />
+                    </button>
                 </div>
                 <div className={style.modal__content}>
                     <Calendar

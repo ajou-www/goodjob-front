@@ -72,6 +72,7 @@ function Header() {
                 <div className={style.header__actions}>
                     {isLoggedIn ? (
                         <>
+                            <HeaderNotificationButton />{' '}
                             {isMobile ? (
                                 <Search
                                     className={style.header__search}
@@ -82,12 +83,9 @@ function Header() {
                             ) : (
                                 <></>
                             )}
-                            <HeaderNotificationButton />
-
                             {searchDialogOpen && (
                                 <SearchDialog onClose={() => setSearchDialogOpen(false)} />
                             )}
-
                             <ProfileDialog />
                         </>
                     ) : (

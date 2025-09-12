@@ -161,9 +161,12 @@ function ManageItem({
 
                         <div className={style.jobCard__content}>
                             <h3 className={style.jobCard__title}>{job.jobTitle}</h3>
-                            {job.applyDueDate ? (
+                            {!job.applyDueDate ||
+                            job.applyDueDate === 'undefined' ||
+                            job.applyDueDate === 'null' ? (
                                 <p className={style.jobCard__dueDate} onClick={toggleCalendar}>
-                                    {job.applyDueDate.replace(/-/g, '.') + ' 마감'}
+                                    {(job.applyDueDate ? job.applyDueDate.replace(/-/g, '.') : '') +
+                                        ' 마감'}
                                 </p>
                             ) : (
                                 <button className={style.calendarButton} onClick={toggleCalendar}>
@@ -272,7 +275,7 @@ function ManageItem({
 
                     <div className={style.item__cell}>
                         <div className={style.item__date} onClick={toggleCalendar}>
-                            {formatDate(job.applyDueDate ?? '')}
+                            {!job.applyDueDate ? '마감일 지정' : formatDate(job.applyDueDate ?? '')}
                         </div>
                     </div>
 

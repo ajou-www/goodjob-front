@@ -16,7 +16,6 @@ function JobManageItem({ job, onRemove, onStatusChange, statusOptions }: JobMana
     const statusDropdownRef = useRef<HTMLDivElement>(null);
     const actionsMenuRef = useRef<HTMLDivElement>(null);
 
-    // 상태에 따른 색상 매핑
     const getStatusColor = (vaildType: number | null) => {
         switch (vaildType) {
             case 0:
@@ -33,7 +32,6 @@ function JobManageItem({ job, onRemove, onStatusChange, statusOptions }: JobMana
     // 외부 클릭 감지
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            // 상태 드롭다운 외부 클릭
             if (
                 statusDropdownRef.current &&
                 !statusDropdownRef.current.contains(event.target as Node)
@@ -41,7 +39,6 @@ function JobManageItem({ job, onRemove, onStatusChange, statusOptions }: JobMana
                 setShowStatusDropdown(false);
             }
 
-            // 액션 메뉴 외부 클릭
             if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
                 setShowActions(false);
             }
@@ -56,8 +53,13 @@ function JobManageItem({ job, onRemove, onStatusChange, statusOptions }: JobMana
     const formatDate = (dateString: string | null) => {
         if (!dateString) return '';
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
         return date.toLocaleDateString();
     };
+
+    useEffect(() => {
+        console.log(job.applyEndDate);
+    }, []);
 
     return (
         <div className={style.item}>
@@ -74,7 +76,13 @@ function JobManageItem({ job, onRemove, onStatusChange, statusOptions }: JobMana
             </div>
 
             <div className={style.item__cell}>
-                <div className={style.item__date}>{formatDate(job.applyEndDate)}</div>
+                <div className={style.item__date}>
+                    {!job.applyEndDate ||
+                    job.applyEndDate === 'undefined' ||
+                    job.applyEndDate === 'null'
+                        ? '마감일 지정'
+                        : formatDate(job.applyEndDate)}
+                </div>
             </div>
 
             <div className={style.item__cell}>

@@ -25,7 +25,7 @@ function JobList() {
     const selectedCVId = useRecommendationStore((state) => state.selectedCVId);
     const setRecommendationsCache = useRecommendationStore((state) => state.setRecommendations);
     const recommendationsCache = useRecommendationStore((state) => state.recommendationsCache);
-    const selectedJobDetail = useJobStore((state) => state.selectedJobDetail); // 추가
+    const selectedJobDetail = useJobStore((state) => state.selectedJobDetail);
     const { setIsJobListLoad } = useActionStore();
     const { setGood } = useUserStore();
     const visited = useUserStore((state) => state.good);

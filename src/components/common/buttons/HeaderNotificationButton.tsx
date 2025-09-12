@@ -31,7 +31,7 @@ function HeaderNotificationButton() {
                     style={{
                         display: 'inline-block',
                     }}>
-                    <Bell size={24} className={style.actionButton__icon} />
+                    <Bell size={22} className={style.actionButton__icon} />
                 </li>
             </button>
             {showAlertDropdown ? (
