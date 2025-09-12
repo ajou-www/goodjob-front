@@ -8,7 +8,6 @@ import SearchDialog from '../dialog/SearchDialog';
 import HeaderNotificationButton from '../buttons/HeaderNotificationButton';
 
 function Header() {
-    // 검색 관련
     const [searchDialogOpen, setSearchDialogOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);

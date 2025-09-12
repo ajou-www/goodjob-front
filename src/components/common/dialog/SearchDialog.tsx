@@ -11,7 +11,7 @@ function SearchDialog({ onClose }: SearchDialogProps) {
             <div className={style.header}>
                 <h1 className={style.title}>검색</h1>
                 <button className={style.closeButton} onClick={onClose}>
-                    <X className={style.closeButton} size={24} />
+                    <X size={24} />
                 </button>
             </div>
             <div className={style.searchBarWrapper}>

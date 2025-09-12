@@ -249,15 +249,7 @@ function Upload() {
                                 </button>
                             </div>
 
-                            {isUploading && (
-                                // <div className={style.uploadProgress}>
-                                //     <div className={style.uploadProgress__bar}>
-                                //         <div className={style.uploadProgress__fill}></div>
-                                //     </div>
-                                //     <p className={style.uploadProgress__text}>업로드 중...</p>
-                                // </div>
-                                <LoadingAnime1 />
-                            )}
+                            {isUploading && <LoadingAnime1 />}
                             {uploadSuccess && (
                                 <div className={style.uploadSuccess}>
                                     <Check size={20} />

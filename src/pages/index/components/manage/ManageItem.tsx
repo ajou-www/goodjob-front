@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type application from '../../../../types/application';
 import style from './styles/ManageItem.module.scss';
-import { Trash, Check, X, MoreHorizontal } from 'lucide-react';
+import { Trash, Check, X, MoreHorizontal, Trash2 } from 'lucide-react';
 import CalendarDialog from '../../../../components/common/dialog/CalendarDialog';
 import 'react-calendar/dist/Calendar.css';
 
@@ -157,6 +157,14 @@ function ManageItem({
                             <div className={style.jobCard__companyInfo}>
                                 <div className={style.jobCard__companyName}>{job.companyName}</div>
                             </div>
+                            <button
+                                className={style.jobCard__deleteButton}
+                                onClick={() => {
+                                    onRemove();
+                                    alert('관리 중인 공고가 삭제되었습니다');
+                                }}>
+                                <Trash2 size={20} />
+                            </button>
                         </div>
 
                         <div className={style.jobCard__content}>

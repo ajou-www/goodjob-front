@@ -53,6 +53,10 @@
             color: #999;
             font-style: italic;
         }
+
+        @media (max-width: 480px) {
+            width: 200px;
+        }
     }
 
     &__editField {
@@ -348,6 +352,11 @@
         margin-bottom: 1rem;
     }
 
+    &__deleteButton {
+        border: none;
+        background: transparent;
+    }
+
     &__companyInfo {
         display: flex;
         align-items: center;
@@ -450,44 +459,15 @@
         display: flex;
         justify-content: flex-end;
 
-        @media (max-width: 480px) {
-            gap: 1rem;
-        }
-
         &__container {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
             justify-content: flex-end;
         }
-
-        &__tag {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.25rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background-color: #f2f7ff;
-            color: #1877f2;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-
-            &:hover {
-                background-color: #e6f0ff;
-                transform: translateY(-1px);
-            }
-
-            &.experience {
-                background-color: #e8f5e9;
-                color: #43a047;
-            }
-
-            &.type {
-                background-color: #fff8e1;
-                color: #ffa000;
-            }
+        @media (max-width: 480px) {
+            gap: 1rem;
+            justify-content: space-between;
         }
     }
 
@@ -500,6 +480,8 @@
     }
     &__footer {
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
         margin-top: auto;
         padding-top: 1rem;

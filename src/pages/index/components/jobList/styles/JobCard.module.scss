@@ -10,7 +10,15 @@
     width: 100%;
     display: flex;
     @media (max-width: 480px) {
-        padding: 0.5rem;
+        // border-radius: 8px;
+        border-radius: 0px;
+        padding-top: 1.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-bottom: 1.5rem;
+        border: none;
+        border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
     }
 
     &:hover {

@@ -12,7 +12,6 @@
         min-height: 100dvh;
     }
 
-    // 블러 배경 원
     &::before {
         content: '';
         position: absolute;
@@ -250,6 +249,8 @@
 }
 
 .filePreview {
+    display: flex;
+    flex-direction: column;
     width: 100%;
 
     &__header {
@@ -421,15 +422,6 @@
     }
 }
 
-// iOS 안전 영역 처리
-@supports (-webkit-touch-callout: none) {
-    .page {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-    }
-}
 @media (max-width: 768px) {
     .page {
         padding: 15px;
