@@ -84,7 +84,6 @@ const useNotificationStore = create<NotificationStore>()((set) => ({
             });
         }
 
-        // 수정 cvId 추가하기
         if (jobIds.length > 0) {
             const res = await axiosInstance.get(
                 `/jobs/_batch?ids=${jobIds.join(',')}&cvId=${notis?.cvId}`,
@@ -106,14 +105,20 @@ const useNotificationStore = create<NotificationStore>()((set) => ({
     },
     deleteNoti: async (id) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axiosInstance.delete(`/alarms/${id}`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-            withCredentials: true,
-        });
 
-        return res.status;
+        try {
+            const res = await axiosInstance.delete(`/alarms/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                withCredentials: true,
+            });
+
+            return res.status;
+        } catch (error) {
+            console.log('알림 삭제 에러', error);
+            throw error;
+        }
     },
 }));
 

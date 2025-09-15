@@ -24,7 +24,7 @@ const useAdminServerInfoStore = create<adminServerInfoStore>((set) => ({
             });
             set({ serverInfo: res.data });
         } catch (error) {
-            console.error('서버 정보 가져오기 오류: ', error);
+            console.error('서버 상태 가져오기 오류: ', error);
             throw error;
         }
     },

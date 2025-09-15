@@ -30,21 +30,12 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
                 });
             }
 
-            // API 호출
             const res = await axiosInstance.post(`/bookmark/add?JobId=${id}`, null, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
                 withCredentials: true,
             });
-
-            console.log(`Add bookmark: ${res.status}`);
-
-            // 성공 시 전체 북마크 목록 갱신 (선택적)
-            if (res.status === 200 || res.status === 201) {
-                // 이미 낙관적으로 업데이트했으므로 전체 목록 갱신은 필요 없음
-                // await useBookmarkStore.getState().getBookmark();
-            }
 
             return res.status;
         } catch (error) {
@@ -62,10 +53,11 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
                 },
                 withCredentials: true,
             });
-            set({ bookmarkList: res.data }); // 응답 데이터로 상태 업데이트
+            set({ bookmarkList: res.data });
             return res.data;
         } catch (error) {
             console.log(`북마크 가져오기 에러: ${error}`);
+            throw error;
             return [];
         }
     },
@@ -81,7 +73,6 @@ const useBookmarkStore = create<bookmarkStore>((set) => ({
                 bookmarkList: currentBookmarks.filter((bookmark) => bookmark.id !== id),
             });
 
-            // API 호출
             const res = await axiosInstance.delete(`/bookmark/remove?JobId=${id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

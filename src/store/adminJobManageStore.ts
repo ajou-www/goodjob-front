@@ -85,6 +85,7 @@ const useAdminJobManageStore = create<adminJobManageStore>((set) => ({
             });
         } catch (error) {
             console.error('관리자 공고 리스트 불러오기 에러: ', error);
+            throw error;
         }
     },
     jobSearch: async (page, size, query, sort) => {
@@ -105,7 +106,7 @@ const useAdminJobManageStore = create<adminJobManageStore>((set) => ({
                 isLastPage: res.data.last,
             });
         } catch (error) {
-            console.error('관리자 공고 검색: ', error);
+            console.error('관리자 공고 검색 에러: ', error);
             throw error;
         }
     },

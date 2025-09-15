@@ -36,16 +36,22 @@ const useApplyStore = create<applyStore>((set) => ({
     },
     editApplications: async (jobId, status, note, endDate) => {
         const accessToken = useAuthStore.getState().accessToken;
-        const res = await axiosInstance.put(
-            `/applications?jobId=${jobId}`,
-            {
-                applyStatus: status,
-                note: note,
-                applyDueDate: endDate,
-            },
-            { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
-        );
-        return res.status;
+
+        try {
+            const res = await axiosInstance.put(
+                `/applications?jobId=${jobId}`,
+                {
+                    applyStatus: status,
+                    note: note,
+                    applyDueDate: endDate,
+                },
+                { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }
+            );
+            return res.status;
+        } catch (error) {
+            console.log('지원이력 수정 에러', error);
+            throw error;
+        }
     },
     deleteApplications: async (jobId) => {
         const accessToken = useAuthStore.getState().accessToken;

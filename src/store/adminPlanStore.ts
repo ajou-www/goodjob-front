@@ -28,7 +28,7 @@ const useAdminPlanStore = create<AdminPlanStore>((set) => ({
             });
             set({ plan: res.data });
         } catch (error) {
-            console.error('플랜 데이터 가져오기 오류: ', error);
+            console.error('유저 플랜 가져오기 오류: ', error);
             throw error;
         }
     },

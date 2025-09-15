@@ -31,8 +31,12 @@ function Manage() {
     const statusOptions = ['준비중', '지원', '서류전형', '코테', '면접', '최종합격', '불합격'];
 
     const handleApplicationRemove = async (jobId: number) => {
-        await deleteApplications(jobId);
-        await getApplications();
+        try {
+            await deleteApplications(jobId);
+            await getApplications();
+        } catch (error) {
+            console.log('지원이력 삭제 에러', error);
+        }
     };
 
     const handleApplicationEdit = async (

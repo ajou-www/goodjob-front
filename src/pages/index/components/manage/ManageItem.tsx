@@ -163,7 +163,7 @@ function ManageItem({
                                     onRemove();
                                     alert('관리 중인 공고가 삭제되었습니다');
                                 }}>
-                                <Trash2 size={20} />
+                                <Trash2 size={20} style={{ color: '#f44336' }} />
                             </button>
                         </div>
 

@@ -28,15 +28,21 @@ const useAuthStore = create<AuthStore>()(
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,
                 });
-                if (res.status === 200) {
-                    set({ accessToken: null, isLoggedIn: false });
-                    localStorage.removeItem('admin-job-storage');
-                    localStorage.removeItem('admin-storage');
-                    localStorage.removeItem('page-storage');
-                    localStorage.removeItem('user-token');
+                try {
+                    if (res.status === 200) {
+                        set({ accessToken: null, isLoggedIn: false });
+                        localStorage.removeItem('admin-job-storage');
+                        localStorage.removeItem('admin-storage');
+                        localStorage.removeItem('page-storage');
+                        localStorage.removeItem('user-token');
+                    }
+                } catch (error) {
+                    alert('로그아웃 실패: 문제가 지속될 시 관리자에게 문의하세요.');
+                    throw error;
                 }
             },
             setForceLogout: () => {
+                // 리프레시 토큰 에러 상황: 로컬 스토리지 지우기
                 set({ accessToken: null, isLoggedIn: false });
                 localStorage.removeItem('admin-job-storage');
                 localStorage.removeItem('admin-storage');
@@ -49,13 +55,12 @@ const useAuthStore = create<AuthStore>()(
                         headers: { Authorization: `Bearer ${accessToken}` },
                         withCredentials: true,
                     });
-                    console.log('탈퇴중');
                     if (res.status === 200) {
-                        console.log('탈퇴완료');
                         localStorage.clear();
                     }
                 } catch (error) {
-                    console.log(error);
+                    alert('탈퇴 중 에러 발생: 문제가 지속될 시 관리자에게 문의하세요.');
+                    throw error;
                 }
             },
         }),

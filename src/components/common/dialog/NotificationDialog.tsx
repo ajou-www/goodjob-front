@@ -30,10 +30,15 @@ function NotificationDialog({ toggle, isClose }: NotificationDialogProps) {
     const handleRemove = async (id: number) => {
         const res = await deleteNoti(id);
         console.log(res);
-        if (res === 204) {
-            fetchNotiList(false, 'CV_MATCH');
-            fetchNotiList(false, 'APPLY_DUE');
+        try {
+            if (res === 204) {
+                fetchNotiList(false, 'CV_MATCH');
+                fetchNotiList(false, 'APPLY_DUE');
+            }
+        } catch (error) {
+            console.log('알림 지우기 에러', error);
         }
+
         return;
     };
 

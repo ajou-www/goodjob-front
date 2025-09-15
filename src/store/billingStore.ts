@@ -38,6 +38,7 @@ const useBillingStore = create<billingStore>((set) => ({
             return res.status;
         } catch (error) {
             console.error('결제 정보 임시 저장 오류: ', error);
+            alert('결제가 완료되지 않았습니다, 관리자에게 문의하세요.');
             throw error;
         }
     },
@@ -54,6 +55,7 @@ const useBillingStore = create<billingStore>((set) => ({
             return res.data;
         } catch (error) {
             console.error('결제 정보 검증 오류: ', error);
+            alert('결제가 완료되지 않았습니다, 관리자에게 문의하세요.');
             throw error;
         }
     },
@@ -70,6 +72,7 @@ const useBillingStore = create<billingStore>((set) => ({
             return res.data;
         } catch (error) {
             console.error('토스 결제 확정 오류: ', error);
+            alert('결제가 완료되지 않았습니다, 관리자에게 문의하세요.');
             throw error;
         }
     },
@@ -86,6 +89,7 @@ const useBillingStore = create<billingStore>((set) => ({
             return res.status;
         } catch (error) {
             console.error('결제 취소 오류: ', error);
+            alert('결제 취소 오류: 관리자에게 문의하세요.');
             throw error;
         }
     },

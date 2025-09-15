@@ -31,7 +31,6 @@ const useCvStore = create<cvStore>((set) => ({
             });
         } catch (error) {
             set({ userCvError: '유저 CV 정보 가져오기 오류' });
-            console.error('유저 CV 정보 가져오기 오류: ', error);
             throw error;
         }
     },
