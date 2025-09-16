@@ -62,7 +62,9 @@ function CalendarView({ events }: CalendarViewProps) {
     }, [showDropdown]);
 
     return (
-        <div ref={calendarWrapperRef} style={{ position: 'relative', height: '100%' }}>
+        <div
+            ref={calendarWrapperRef}
+            style={{ position: 'relative', height: '100%', maxWidth: 1050 }}>
             <Calendar
                 className={style.myCalendar}
                 localizer={localizer}

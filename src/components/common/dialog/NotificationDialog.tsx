@@ -45,26 +45,19 @@ function NotificationDialog({ toggle, isClose }: NotificationDialogProps) {
     const handleClick = async (
         id: number,
         type: string,
-        isRead: boolean,
         cvId: number,
         jobs?: NotificationJobItem[]
     ) => {
-        let readResult: number = 0;
-        if (!isRead) {
-            readResult = await fetchRead(id);
+        await fetchRead(id);
+        if (type === 'CV_MATCH') {
+            fetchNotiList(false, 'CV_MATCH');
+            setNotificationProps({ props: jobs ?? [], cvId });
+            setViewNewJobList(true);
         }
-        if (isRead || readResult === 200) {
-            console.log(type); // TEST
-            if (type === 'CV_MATCH') {
-                fetchNotiList(false, 'CV_MATCH');
-                setNotificationProps({ props: jobs ?? [], cvId });
-                setViewNewJobList(true);
-            }
 
-            if (type === 'APPLY_DUE') {
-                toggle();
-                navigate('/main/manage');
-            }
+        if (type === 'APPLY_DUE') {
+            toggle();
+            navigate('/main/manage');
         }
     };
 
@@ -126,13 +119,7 @@ function NotificationDialog({ toggle, isClose }: NotificationDialogProps) {
                                 <div
                                     className={style.notiContainer__wrapper}
                                     onClick={(e) => {
-                                        handleClick(
-                                            item.id,
-                                            item.type,
-                                            item.read,
-                                            item.cvId,
-                                            item.jobs
-                                        );
+                                        handleClick(item.id, item.type, item.cvId, item.jobs);
                                         e.stopPropagation();
                                     }}>
                                     {itemIcon(item.type)}
@@ -160,13 +147,7 @@ function NotificationDialog({ toggle, isClose }: NotificationDialogProps) {
                                 <div
                                     className={style.notiContainer__wrapper}
                                     onClick={(e) => {
-                                        handleClick(
-                                            item.id,
-                                            item.type,
-                                            item.read,
-                                            item.cvId,
-                                            item.jobs
-                                        );
+                                        handleClick(item.id, item.type, item.cvId, item.jobs);
                                         e.stopPropagation();
                                     }}>
                                     {itemIcon(item.type)}
